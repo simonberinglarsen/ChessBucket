@@ -1,0 +1,79 @@
+﻿@model AnalyzedGameViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div ng-app="boardApp" ng-controller="testCtrl">
+    <div class="page-header">
+        <h1>Board</h1>
+    </div>
+    <div class="row">
+        <div class="col-xs-4 panel">
+            <h3>Game</h3>
+            <div style="width: 200px; height: 350px; overflow: auto; border: dimgray dashed thin">
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>White</th>
+                            <th>Black</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="move in viewmodel.EvaluatedMoves">
+                            <td><span>{{move.MoveNumber}}</span> </td>
+                            <td><span class="btn-link" ng-click="showMoveByNumberAndColor(move.MoveNumber, true)">{{move.White.Move}}</span></td>
+                            <td><span class="btn-link" ng-click="showMoveByNumberAndColor(move.MoveNumber, false)">{{move.Black.Move}}</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+            </div>
+            <div class="btn btn-primary" ng-click="prevMove()"><span class="glyphicon glyphicon-chevron-left"></span>prev</div>
+            <div class="btn btn-primary" ng-click="nextMove()">next<span class="glyphicon glyphicon-chevron-right"></span></div>
+        </div>
+        <div class="col-xs-3 panel" style="width: 400px">
+            <h3>{{boardHeader}}</h3>
+            <div id="board"></div>
+        </div>
+        <div class="col-xs-3 panel">
+            <h3>Available Moves</h3>
+            <div style="width: 200px;height: 350px; overflow: auto;border: dimgray dashed thin">
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Move</th>
+                            <th>Evaluation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="availableMove in currentMove.AvailableMoves" class="bg-def">
+                            <td><span>{{$index+1}}</span> </td>
+                            <td><span class="">{{availableMove.Move}}</span></td>
+                            <td><span class="btn-link">{{availableMove.AfterCentiPawns}}</span></td>
+                        </tr>
+
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        var cfg = {
+            pieceTheme: 'chessboardjs-0.3.0/img/chesspieces/wikipedia/{piece}.png',
+        };
+        var board = ChessBoard('board', cfg);
+        //--- end example JS ---
+    </script>
+    <script src="~/js/boardapp.js"></script>
+
+}
