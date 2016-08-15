@@ -13,7 +13,7 @@ namespace DemoSite.Models
         public string AfterFen { get; set; }
         public int AfterCentiPawns { get; set; }
         public string Move { get; set; }
-        public List<EvaluatedMove> AvailableMoves { get; set; }
+        public bool IsWhite { get; set; }
     }
 
     public class EvaluatedMove

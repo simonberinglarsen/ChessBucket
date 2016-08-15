@@ -14,29 +14,13 @@ namespace DemoSite.Models
             Board b = new Board();
             b.StartPosition();
             List<EvaluatedMoveWithAlternatives> evaluation = new List<EvaluatedMoveWithAlternatives>();
+            int halfmove = 1;
             foreach (var moveText in moveList)
             {
                 Move move = Move.FromText(moveText);
                 EvaluatedMoveWithAlternatives eval = new EvaluatedMoveWithAlternatives();
+                eval.IsWhite = b.WhitesTurn;
                 eval.BeforeFen = b.DumpFen();
-                eval.Move = move.Text;
-                Move[] availableMoves = b.GenerateMoves();
-                eval.AvailableMoves = new List<EvaluatedMove>();
-                foreach (var availableMove in availableMoves)
-                {
-                    b.DoMove(availableMove);
-                    eval.AvailableMoves.Add(new EvaluatedMove()
-                    {
-                        Move = availableMove.Text,
-                        AfterCentiPawns = Board(b),
-                        AfterFen = b.DumpFen()
-                    });
-                    b.Setup(eval.BeforeFen);
-                }
-                if (b.WhitesTurn)
-                    eval.AvailableMoves = eval.AvailableMoves.OrderByDescending(x => x.AfterCentiPawns).ToList();
-                else
-                    eval.AvailableMoves = eval.AvailableMoves.OrderBy(x => x.AfterCentiPawns).ToList();
                 b.DoMove(move);
                 eval.AfterFen = b.DumpFen();
                 eval.AfterCentiPawns = Board(b);

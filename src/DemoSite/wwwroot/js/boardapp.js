@@ -14,34 +14,22 @@
         .error(function (errorData) {
             var k = 8;
         });
-        $scope.showMoveByNumberAndColor = function (moveNumber, isWhite) {
-            $scope.showMove(moveNumber * 2 - isWhite);
-        }
+      
         $scope.showMove = function (halfMove) {
             $scope.halfMove = halfMove;
-            var moveNumber = Math.floor((halfMove + 1) / 2);
-            var isWhite = Boolean(1 - (halfMove + 1) % 2);
-            var blackMoveText = '';
-            var evalMove = $scope.viewmodel.EvaluatedMoves[moveNumber - 1];
-            var move;
-            if (isWhite)
-                move = evalMove.White;
-            else
-                move = evalMove.Black;
-            $scope.currentMove = move;
-            board.position(move.AfterFen);
-            if (!isWhite)
-                blackMoveText = '- ';
-            $scope.boardHeader = moveNumber + '. ' + blackMoveText + move.Move + '(' + move.AfterCentiPawns + ')';
+            var evalMove = $scope.viewmodel.EvaluatedMoves[halfMove];
+            $scope.currentMove = evalMove;
+            board.position(evalMove.AfterFen);
+            $scope.boardHeader = evalMove.Move;
         }
         $scope.prevMove = function () {
-            if ($scope.halfMove === 1)
+            if ($scope.halfMove === 0)
                 return;
             $scope.halfMove--;
             $scope.showMove($scope.halfMove);
         }
         $scope.nextMove = function () {
-            if ($scope.halfMove === $scope.viewmodel.EvaluatedMoves.length*2)
+            if ($scope.halfMove === $scope.viewmodel.EvaluatedMoves.length-1)
                 return;
             $scope.halfMove++;
             $scope.showMove($scope.halfMove);

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Microsoft.EntityFrameworkCore.Query.Expressions;
 
 //0=. , 1=prnbqk, 7=prnbqk
 namespace DemoSite.Models
@@ -274,10 +273,10 @@ namespace DemoSite.Models
             WhiteCanCastleLong = blocks[2][1] == 'Q';
             BlackCanCastleShort = blocks[2][2] == 'k';
             BlackCanCastleLong = blocks[2][3] == 'q';
-            EnpassantIndex = blocks[3] == "-" ? 0 : (char.ToUpper(blocks[3][0])-'A')+8*(blocks[3][1]-'1');
+            EnpassantIndex = blocks[3] == "-" ? 0 : (char.ToUpper(blocks[3][0]) - 'A') + 8 * (blocks[3][1] - '1');
             HalfmoveClock = int.Parse(blocks[4]);
             FullmoveNumber = int.Parse(blocks[5]);
-          
+
 
         }
 
@@ -655,7 +654,54 @@ namespace DemoSite.Models
             return all.ToArray();
         }
 
-       
+
+        public void PopulateSan(Move[] moves)
+        {
+            string pieces = ".PRNBQKPRNBQK";
+            foreach (var m in moves)
+            {
+                char piece = pieces[_board[m.FromNumber]];
+                int moveSpeed = Math.Abs(m.FromNumber - m.ToNumber);
+                if (piece == 'K' && moveSpeed == 2)
+                {
+                    m.San = (m.ToNumber == 2 || m.ToNumber == 58) ? "o-o-o" : "o-o";
+                    continue;
+                }
+                string destinationInfo = m.Text.Substring(2);
+                string promotionInfo = "";
+                if (m.IsPromoting) promotionInfo = "=" + pieces[m.PromoteTo];
+                bool capture = _board[m.ToNumber] != 0 || m.EnpassantCapture;
+                string captureInfo = capture ? "x" : "";
+                string pieceInfo;
+                if (capture && piece == 'P')
+                    pieceInfo = "" + m.Text[0];
+                else
+                    pieceInfo = piece != 'P' ? "" + piece : "";
+                m.San = string.Format("{0}{1}{2}{3}", pieceInfo, captureInfo, destinationInfo, promotionInfo);
+            }
+
+            // make unique
+            var z = moves
+                .GroupBy(c => c.San)
+                .Where(grp => grp.Count() > 1)
+                .Select(grp => new { list = grp.ToList() });
+            foreach (var grp in z.ToList())
+            {
+                foreach (var m in grp.list)
+                {
+                    if (grp.list.Any(x => x != m && m.Text[0] == x.Text[0]))
+                    {
+                        if (grp.list.Any(x => x != m && m.Text[1] == x.Text[1]))
+                            m.San = m.San.Insert(1, m.Text.Substring(0, 2));
+                        else
+                            m.San = m.San.Insert(1, "" + m.Text[1]);
+                    }
+                    else
+                        m.San = m.San.Insert(1, "" + m.Text[0]);
+                }
+            }
+
+        }
     }
     public class Move
     {
@@ -681,6 +727,9 @@ namespace DemoSite.Models
         {
             get { return itoa(FromNumber) + itoa(ToNumber) + (IsPromoting ? "" + pieceCodes[PromoteTo] : ""); }
         }
+
+        public string San { get; set; }
+
         private string itoa(int i)
         {
             int x = i % 8;

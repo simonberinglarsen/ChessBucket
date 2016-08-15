@@ -8,22 +8,18 @@
         <h1>Board</h1>
     </div>
     <div class="row">
-        <div class="col-xs-4 panel">
+        <div class="col-xs-2 panel">
             <h3>Game</h3>
-            <div style="width: 200px; height: 350px; overflow: auto; border: dimgray dashed thin">
+            <div style="width: 100px; height: 350px; overflow: auto; border: dimgray dashed thin">
                 <table class="table table-condensed">
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>White</th>
-                            <th>Black</th>
+                            <th>Move</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="move in viewmodel.EvaluatedMoves">
-                            <td><span>{{move.MoveNumber}}</span> </td>
-                            <td><span class="btn-link" ng-click="showMoveByNumberAndColor(move.MoveNumber, true)">{{move.White.Move}}</span></td>
-                            <td><span class="btn-link" ng-click="showMoveByNumberAndColor(move.MoveNumber, false)">{{move.Black.Move}}</span></td>
+                        <tr ng-repeat="move in viewmodel.EvaluatedMoves track by $index">
+                            <td><span class="btn-link" ng-click="showMove($index)">{{move.Move}}</span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -37,31 +33,7 @@
             <h3>{{boardHeader}}</h3>
             <div id="board"></div>
         </div>
-        <div class="col-xs-3 panel">
-            <h3>Available Moves</h3>
-            <div style="width: 200px;height: 350px; overflow: auto;border: dimgray dashed thin">
-                <table class="table table-condensed">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Move</th>
-                            <th>Evaluation</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="availableMove in currentMove.AvailableMoves" class="bg-def">
-                            <td><span>{{$index+1}}</span> </td>
-                            <td><span class="">{{availableMove.Move}}</span></td>
-                            <td><span class="btn-link">{{availableMove.AfterCentiPawns}}</span></td>
-                        </tr>
-
-
-                    </tbody>
-                </table>
-
-            </div>
-        </div>
-
+      
     </div>
 
 </div>
