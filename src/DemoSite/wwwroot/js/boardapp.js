@@ -6,7 +6,7 @@
         $scope.currentMove = {};
         $scope.halfMove = 1;
 
-        
+
         $http({ method: 'Get', url: '/Board/RandomGame', params: {} })
         .success(function (data) {
             $scope.viewmodel = data;
@@ -14,13 +14,21 @@
         .error(function (errorData) {
             var k = 8;
         });
-      
+
         $scope.showMove = function (halfMove) {
             $scope.halfMove = halfMove;
-            var evalMove = $scope.viewmodel.EvaluatedMoves[halfMove];
+            var evalMove = $scope.viewmodel.AnalyzedMoves[halfMove];
             $scope.currentMove = evalMove;
-            board.position(evalMove.AfterFen);
-            $scope.boardHeader = evalMove.Move;
+            var actualMove = evalMove.AllMoves[evalMove.ActualMoveIndex];
+            var fen = actualMove.Fen;
+            board.position(fen);
+            $scope.boardHeader = evalMove.Description;
+            if (evalMove.Category === 1)
+                $scope.boardHeader += '  (Missed Oppertunity)';
+            else if (evalMove.Category === 2)
+                $scope.boardHeader += '  (Blunder)';
+            else if (evalMove.Category === 3)
+                $scope.boardHeader += '  (Good Move)';
         }
         $scope.prevMove = function () {
             if ($scope.halfMove === 0)
@@ -29,7 +37,7 @@
             $scope.showMove($scope.halfMove);
         }
         $scope.nextMove = function () {
-            if ($scope.halfMove === $scope.viewmodel.EvaluatedMoves.length-1)
+            if ($scope.halfMove === $scope.viewmodel.AnalyzedMoves.length - 1)
                 return;
             $scope.halfMove++;
             $scope.showMove($scope.halfMove);

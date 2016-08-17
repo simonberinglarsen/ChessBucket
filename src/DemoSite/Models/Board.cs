@@ -230,10 +230,12 @@ namespace DemoSite.Models
                 if (r != 0) sb.Append('/');
             }
             sb.Append(" " + (WhitesTurn ? 'w' : 'b') + " ");
-            sb.Append(WhiteCanCastleShort ? "K" : "-");
-            sb.Append(WhiteCanCastleLong ? "Q" : "-");
-            sb.Append(BlackCanCastleShort ? "k" : "-");
-            sb.Append(BlackCanCastleLong ? "q" : "-");
+            sb.Append(WhiteCanCastleShort ? "K" : "");
+            sb.Append(WhiteCanCastleLong ? "Q" : "");
+            sb.Append(BlackCanCastleShort ? "k" : "");
+            sb.Append(BlackCanCastleLong ? "q" : "");
+            sb.Append(!BlackCanCastleLong && !BlackCanCastleShort && !WhiteCanCastleLong && !WhiteCanCastleShort ? "-" : "");
+
             string enpassantSquare = "" + (char)('a' + (EnpassantIndex % 8)) + (char)('1' + (EnpassantIndex / 8));
             sb.Append(" " + (EnpassantIndex == 0 ? "-" : enpassantSquare));
             sb.Append(" " + HalfmoveClock);
@@ -269,10 +271,10 @@ namespace DemoSite.Models
                 }
             }
             WhitesTurn = blocks[1] == "w";
-            WhiteCanCastleShort = blocks[2][0] == 'K';
-            WhiteCanCastleLong = blocks[2][1] == 'Q';
-            BlackCanCastleShort = blocks[2][2] == 'k';
-            BlackCanCastleLong = blocks[2][3] == 'q';
+            WhiteCanCastleShort = blocks[2].Contains('K');
+            WhiteCanCastleLong = blocks[2].Contains('Q');
+            BlackCanCastleShort = blocks[2].Contains('k');
+            BlackCanCastleLong = blocks[2].Contains('q');
             EnpassantIndex = blocks[3] == "-" ? 0 : (char.ToUpper(blocks[3][0]) - 'A') + 8 * (blocks[3][1] - '1');
             HalfmoveClock = int.Parse(blocks[4]);
             FullmoveNumber = int.Parse(blocks[5]);
@@ -387,7 +389,7 @@ namespace DemoSite.Models
             {
                 if (rank7 && _board[attack] >= 7)
                     all.AddRange(new[] { new Move(s, attack, 2), new Move(s, attack, 3), new Move(s, attack, 4), new Move(s, attack, 5) });
-                else if (rank5 && _board[attack] == 0 && (EnpassantIndex == attack - 8))
+                else if (rank5 && _board[attack] == 0 && (EnpassantIndex == attack))
                     all.Add(new Move(s, attack) { EnpassantCapture = true });
                 else if (!rank7 && _board[attack] >= 7)
                     all.Add(new Move(s, attack));
@@ -518,8 +520,13 @@ namespace DemoSite.Models
             if (move.EnpassantCapture)
                 _board[move.ToNumber - 8] = 0;
             // pawn moves two ranks
-            if (_board[move.ToNumber] == 1 && (move.ToNumber - move.FromNumber == 16))
-                EnpassantIndex = move.ToNumber;
+            bool blackPawnToLeft = move.ToNumber % 8 != 0 && _board[move.ToNumber - 1] == 7;
+            bool blackPawnToRight = move.ToNumber % 8 != 7 && _board[move.ToNumber + 1] == 7;
+            bool pawnNextToThis = blackPawnToLeft || blackPawnToRight;
+            if (_board[move.ToNumber] == 1 && (move.ToNumber - move.FromNumber == 16) && pawnNextToThis)
+            {
+                EnpassantIndex = move.ToNumber - 8;
+            }
             else
                 EnpassantIndex = 0;
             return undo;
@@ -701,6 +708,15 @@ namespace DemoSite.Models
                 }
             }
 
+        }
+
+        public Move MoveFromText(string moveText)
+        {
+            Move m = Move.FromText(moveText);
+            int pieceType = _board[m.FromNumber];
+            if ((pieceType == 1 || pieceType == 7) && Math.Abs(m.ToNumber - m.FromNumber) % 8 != 0 && _board[m.ToNumber] == 0)
+                m.EnpassantCapture = true;
+            return m;
         }
     }
     public class Move

@@ -28,7 +28,7 @@ namespace DemoSite.Models
                 for (int j = 0; j < moves.Length; j++)
                 {
                     b.DoMove(moves[j]);
-                    int score = Analyze.Board(b);
+                    int score = Analyze.MaterialScore(b);
                     int adjustedScore = score*adjustment;
                     if (adjustedScore > bestScore || bestMoves.Count == 0)
                     {

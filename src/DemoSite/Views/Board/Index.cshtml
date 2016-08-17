@@ -18,8 +18,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="move in viewmodel.EvaluatedMoves track by $index">
-                            <td><span class="btn-link" ng-click="showMove($index)">{{move.Move}}</span></td>
+                        <tr ng-repeat="move in viewmodel.AnalyzedMoves track by $index">
+                            <td ng-class="{'move-warning' : move.Category===1, 'move-danger' : move.Category===2, 'move-success' : move.Category===3}" ng-click="showMove($index)"><span>{{move.Description}}</span></td>
                         </tr>
                     </tbody>
                 </table>

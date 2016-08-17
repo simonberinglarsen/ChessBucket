@@ -7,9 +7,6 @@ namespace DemoSite.Models.BoardViewModels
 {
     public class AnalyzedGameViewModel
     {
-        public List<EvaluatedMoveWithAlternatives> EvaluatedMoves { get; set; }
-
+        public List<AnalyzedMove> AnalyzedMoves { get; set; }
     }
-
-   
 }

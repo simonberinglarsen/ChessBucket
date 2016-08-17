@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,10 +12,10 @@ namespace ConsoleApp1
     {
         private string _pgnHeader;
         private string _pgnMoves;
-        Dictionary<string, string> Headers = new Dictionary<string, string>();
+        public Dictionary<string, string> Headers = new Dictionary<string, string>();
         public string[] MovesLan { get; set; }
         public string[] MovesSan { get; set; }
-        internal void LoadPgn(string pgn)
+        public void LoadPgn(string pgn)
         {
             int gameIndex = pgn.IndexOf("1.");
             _pgnHeader = pgn.Substring(0, gameIndex);
@@ -38,7 +39,7 @@ namespace ConsoleApp1
             }
         }
 
-        public void ParseMoves()
+        private void ParseMoves()
         {
             Board b = new Board();
             b.StartPosition();
@@ -55,11 +56,13 @@ namespace ConsoleApp1
                     break;
                 if (i % 3 == 0)
                     continue;
+                Debug.WriteLine("parsing move: "+elements[i]);
                 var moves = b.GenerateMoves();
                 b.PopulateSan(moves);
                 var r = moves.Single(x => x.San.ToLower() == elements[i].Replace("+", ""));
                 lan.Add(r.Text);
                 san.Add(r.San);
+                
                 b.DoMove(r);
             }
             MovesLan = lan.ToArray();

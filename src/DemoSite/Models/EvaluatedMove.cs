@@ -7,19 +7,24 @@ using System.Text.RegularExpressions;
 
 namespace DemoSite.Models
 {
-    public class EvaluatedMoveWithAlternatives
+    public class AnalyzedMove
     {
         public string BeforeFen { get; set; }
-        public string AfterFen { get; set; }
-        public int AfterCentiPawns { get; set; }
-        public string Move { get; set; }
         public bool IsWhite { get; set; }
+        public int ActualMoveIndex { get; set; }
+        public string Description { get; set; }
+        public EvaluatedMove[] AllMoves { get; set; }
+        public int Category { get; set; }
     }
 
     public class EvaluatedMove
     {
-        public string AfterFen { get; set; }
-        public int AfterCentiPawns { get; set; }
-        public string Move { get; set; }
+        public string Fen { get; set; }
+        public string MoveSan { get; set; }
+        public string MoveLan { get; set; }
+        public int Value { get; set; }
+        public int DeltaToBest { get; set; }
+
     }
+
 }

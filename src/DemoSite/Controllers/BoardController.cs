@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -26,31 +27,24 @@ namespace DemoSite.Controllers
         [HttpGet]
         public string RandomGame()
         {
-            try
+
+            PgnParser parser = new PgnParser();
+            //parser.LoadPgn(System.IO.File.ReadAllText(@"C:\Users\bc0618\Desktop\simon\partier\Candidates1962.pgn.txt"));
+            parser.LoadPgn(System.IO.File.ReadAllText(@"C:\Users\bc0618\Desktop\simon\partier\IMG_20160813_184222.pgn"));
+            List<string> moveList = parser.MovesSan.ToList();
+            var analyzedMoves = Analyze.Game(parser.MovesLan.ToList());
+
+            // map to viewmodel
+            AnalyzedGameViewModel vm = new AnalyzedGameViewModel { AnalyzedMoves = new List<AnalyzedMove>() };
+            for (int i = 0; i < analyzedMoves.Count; i++)
             {
-
-
-                PgnParser parser = new PgnParser();
-                parser.LoadPgn(System.IO.File.ReadAllText(@"C:\Users\bc0618\Desktop\simon\partier\Candidates1962.pgn.txt"));
-
-                List<string> moveList = parser.MovesSan.ToList();
-                var evaluatedMoves = Analyze.Game(parser.MovesLan.ToList());
-
-                AnalyzedGameViewModel vm = new AnalyzedGameViewModel();
-                vm.EvaluatedMoves = new List<EvaluatedMoveWithAlternatives>();
-                for (int i = 0; i < evaluatedMoves.Count; i++)
-                {
-                    evaluatedMoves[i].Move = (i / 2 + 1) + ". " + (!evaluatedMoves[i].IsWhite ? "-, " : "") + moveList[i];
-                    vm.EvaluatedMoves.Add(evaluatedMoves[i]);
-                }
-
-                return JsonConvert.SerializeObject(vm);
+                analyzedMoves[i].Description = (i / 2 + 1) + ". " + (!analyzedMoves[i].IsWhite ? "-, " : "") + moveList[i];
+                vm.AnalyzedMoves.Add(analyzedMoves[i]);
             }
-            catch (Exception)
-            {
 
-                throw;
-            }
+            return JsonConvert.SerializeObject(vm);
+
+
         }
     }
 }
