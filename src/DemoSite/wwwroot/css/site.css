@@ -21,16 +21,50 @@ textarea {
     background-color: #f66;
     color: #600;
     font-weight: bold;
+    font-family: monospace, monospace;
+    font-size: 1.1em;
+    padding: 2px;
+    margin: 2px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.move-selected {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.move-normal {
+    border-radius: 25px;
+    background: #fff;
+    font-family: monospace, monospace;
+    font-size: 1.1em;
+    padding: 2px;
+    margin: 2px;
+    border-radius: 5px;
+    display: inline-block;
 }
 
 .move-success {
     background-color: #6f6;
     color: #060;
     font-weight: bold;
+    font-family: monospace, monospace;
+    font-size: 1.1em;
+    padding: 2px;
+    margin: 2px;
+    border-radius: 5px;
+    display: inline-block;
 }
 
 .move-warning {
     background-color: #ff6;
     color: #660;
     font-weight: bold;
+    font-family: monospace, monospace;
+    font-size: 1.1em;
+    padding: 2px;
+    margin: 2px;
+    border-radius: 5px;
+    display: inline-block;
 }

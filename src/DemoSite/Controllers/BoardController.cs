@@ -38,7 +38,8 @@ namespace DemoSite.Controllers
             AnalyzedGameViewModel vm = new AnalyzedGameViewModel { AnalyzedMoves = new List<AnalyzedMove>() };
             for (int i = 0; i < analyzedMoves.Count; i++)
             {
-                analyzedMoves[i].Description = (i / 2 + 1) + ". " + (!analyzedMoves[i].IsWhite ? "-, " : "") + moveList[i];
+
+                analyzedMoves[i].Description = (analyzedMoves[i].IsWhite ?(i / 2 + 1) + "." : "") + moveList[i];
                 vm.AnalyzedMoves.Add(analyzedMoves[i]);
             }
 

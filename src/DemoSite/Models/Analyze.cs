@@ -13,37 +13,63 @@ namespace DemoSite.Models
     {
         public static List<AnalyzedMove> Game(List<string> moveList)
         {
+            int depth = 5;
+            string beforeFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
             using (var proxy = new SFProxy())
             {
                 Board b = new Board();
                 b.StartPosition();
                 List<AnalyzedMove> analyzedMoves = new List<AnalyzedMove>();
-                var doubleTest = "";
+                StringBuilder moveSequence = new StringBuilder();
                 foreach (var moveText in moveList)
                 {
                     System.Diagnostics.Debug.WriteLine(moveText);
                     Move gameMove = b.MoveFromText(moveText);
                     AnalyzedMove analyzedMove = new AnalyzedMove();
                     analyzedMove.IsWhite = b.WhitesTurn;
-                    analyzedMove.BeforeFen = b.DumpFen();
-
-                    string fen = proxy.FenAfterMoves(doubleTest).Substring(5);
-                    if (fen != analyzedMove.BeforeFen)
+                    // sanity check ... to be removed
+                    string fen = proxy.FenAfterMoves(moveSequence.ToString()).Substring(5);
+                    if (fen != beforeFen)
                     {
-                        throw new Exception("last move failed! - >" + doubleTest);
+                        throw new Exception("last move failed! - >" + moveSequence.ToString());
+                    }
+                    // array of actual- and bestmove
+                    string bestMove = proxy.Go(moveSequence.ToString(), depth);
+                    string actualMove = proxy.Go(moveSequence.ToString() + " " + moveText, depth);
+                    var bestMoveEval = EvaluatedMove(b, bestMove);
+                    var actualMoveEval = EvaluatedMove(b, actualMove, moveText);
+                    analyzedMove.ActualMoveIndex = 0;
+                    if (bestMoveEval.MoveLan == actualMoveEval.MoveLan || bestMoveEval.Value <= actualMoveEval.Value)
+                        analyzedMove.AllMoves = new Models.EvaluatedMove[] {actualMoveEval};
+                    else
+                    {
+                        analyzedMove.ActualMoveIndex = 1;
+                        analyzedMove.AllMoves = new Models.EvaluatedMove[] { bestMoveEval, actualMoveEval };
                     }
 
-                    analyzedMove.AllMoves = AllMovesFromPosition(analyzedMove.BeforeFen, b, proxy);
-                    analyzedMove.ActualMoveIndex = Array.IndexOf(analyzedMove.AllMoves, analyzedMove.AllMoves.Single(m => m.MoveLan == moveText));
                     b.DoMove(gameMove);
                     analyzedMoves.Add(analyzedMove);
-                    doubleTest += " " + moveText;
+                    moveSequence.Append(" " + moveText);
+                    beforeFen = analyzedMove.AllMoves[analyzedMove.ActualMoveIndex].Fen;
                 }
 
                 // comment the game
+                CalculateDeltas(analyzedMoves);
                 Comment(analyzedMoves);
-
                 return analyzedMoves;
+            }
+        }
+
+        private static void CalculateDeltas(List<AnalyzedMove> analyzedMoves)
+        {
+            for (int i = 0; i < analyzedMoves.Count(); i++)
+            {
+                int bestValue = analyzedMoves[i].AllMoves[0].Value;
+                foreach (var m in analyzedMoves[i].AllMoves)
+                {
+                    m.DeltaToBest = m.Value - bestValue;
+                }
+                
             }
         }
 
@@ -80,32 +106,26 @@ namespace DemoSite.Models
             }
         }
 
-
-        private static EvaluatedMove[] AllMovesFromPosition(string fen, Board b, SFProxy proxy)
+        private static EvaluatedMove EvaluatedMove(Board b, string evaluation, string hackMove = null)
         {
-            // get SF results
-            string[] pvs = proxy.Go(fen, 10);
-            EvaluatedMove[] all = new EvaluatedMove[pvs.Length];
-            for (int i = 0; i < pvs.Length; i++)
+            string fen = b.DumpFen();
+            var genMoves = b.GenerateMoves();
+            b.PopulateSan(genMoves);
+            int firstMoveIndex = evaluation.IndexOf(' ');
+            string valueText = evaluation.Substring(0, firstMoveIndex);
+            int value = hackMove != null ? -int.Parse(valueText) : int.Parse(valueText);
+            string moveLan = hackMove ?? evaluation.Substring(firstMoveIndex + 1, 4);
+            var z = genMoves.Single(m => m.Text == moveLan);
+            b.DoMove(z);
+            EvaluatedMove all = new EvaluatedMove()
             {
-                var pv = pvs[i];
-                var genMoves = b.GenerateMoves();
-                b.PopulateSan(genMoves);
-                int firstMoveIndex = pv.IndexOf(' ');
-                int value = int.Parse(pv.Substring(0, firstMoveIndex));
-                string moveLan = pv.Substring(firstMoveIndex + 1, 4);
-                var z = genMoves.Single(m => m.Text == moveLan);
-                b.DoMove(z);
-                all[i] = new EvaluatedMove()
-                {
-                    Value = value,
-                    MoveLan = moveLan,
-                    DeltaToBest = i > 0 ? value - all[0].Value : 0,
-                    MoveSan = z.San,
-                    Fen = b.DumpFen(),
-                };
-                b.Setup(fen);
-            }
+                Value = value,
+                MoveLan = moveLan,
+                DeltaToBest = 0,
+                MoveSan = z.San,
+                Fen = b.DumpFen(),
+            };
+            b.Setup(fen);
             return all;
         }
 

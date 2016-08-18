@@ -28,26 +28,18 @@ namespace ConsoleApp1
             _proc.Start();
         }
 
-        public string[] Go(string fen, int depth)
+        public string Go(string moveSequence, int depth)
         {
-            _proc.StandardInput.WriteLine("setoption name multipv value 500");
-            _proc.StandardInput.WriteLine("position fen " + fen);
+            _proc.StandardInput.WriteLine("position startpos moves " + moveSequence);
             _proc.StandardInput.WriteLine("go depth " + depth);
-            string[] multipv = new string[500];
             int maxindex = 0;
+            string constructedLine = "";
             while (!_proc.StandardOutput.EndOfStream)
             {
                 string line = _proc.StandardOutput.ReadLine();
                 if (line.IndexOf("info depth " + depth) == 0)
                 {
-                    int index1 = line.IndexOf("multipv");
-                    if (index1 == -1)
-                        continue;
-                    index1 += 7;
-                    int index2 = line.IndexOf("score");
-                    string multipvIndexText = line.Substring(index1, index2 - index1).Trim();
-                    int multipvIndex = int.Parse(multipvIndexText) - 1;
-                    maxindex = Math.Max(maxindex, multipvIndex);
+                    if (line.IndexOf("multipv") == -1) continue;
 
                     //construct line
                     int q1 = line.IndexOf(" score ")+7;
@@ -55,24 +47,20 @@ namespace ConsoleApp1
                     string[] score = line.Substring(q1).Split(new char[] {' '});
                     if (score[0] == "mate")
                         score[1] = "-30000";
-                    var constructedLine = score[1]+" "+line.Substring(q2);
+                    constructedLine = score[1]+" "+line.Substring(q2);
                     
                     Debug.WriteLine("constructedLine = "+ constructedLine);
-
-                    multipv[multipvIndex] = constructedLine;
                 }
                 else if (line.IndexOf("bestmove") == 0)
                 {
                     break;
                 }
             }
-            Array.Resize(ref multipv, maxindex + 1);
-            return multipv;
+            return constructedLine;
         }
 
         public string FenAfterMoves(string moves)
         {
-            _proc.StandardInput.WriteLine("setoption name multipv value 500");
             _proc.StandardInput.WriteLine("position startpos moves " + moves);
             _proc.StandardInput.WriteLine("d");
             while (!_proc.StandardOutput.EndOfStream)

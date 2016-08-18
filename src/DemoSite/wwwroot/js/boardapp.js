@@ -4,15 +4,19 @@
         $scope.boardHeader = '-';
         $scope.viewmodel = {};
         $scope.currentMove = {};
-        $scope.halfMove = 1;
+        $scope.halfMove = 0;
+        $scope.isLoading = true;
 
 
         $http({ method: 'Get', url: '/Board/RandomGame', params: {} })
         .success(function (data) {
             $scope.viewmodel = data;
+                $scope.showMove($scope.halfMove);
+            $scope.isLoading = false;
         })
         .error(function (errorData) {
             var k = 8;
+            $scope.isLoading = false;
         });
 
         $scope.showMove = function (halfMove) {

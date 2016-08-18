@@ -9,7 +9,6 @@ namespace DemoSite.Models
 {
     public class AnalyzedMove
     {
-        public string BeforeFen { get; set; }
         public bool IsWhite { get; set; }
         public int ActualMoveIndex { get; set; }
         public string Description { get; set; }

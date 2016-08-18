@@ -8,40 +8,38 @@
         <h1>Board</h1>
     </div>
     <div class="row">
-        <div class="col-xs-2 panel">
-            <h3>Game</h3>
-            <div style="width: 100px; height: 350px; overflow: auto; border: dimgray dashed thin">
-                <table class="table table-condensed">
-                    <thead>
-                        <tr>
-                            <th>Move</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="move in viewmodel.AnalyzedMoves track by $index">
-                            <td ng-class="{'move-warning' : move.Category===1, 'move-danger' : move.Category===2, 'move-success' : move.Category===3}" ng-click="showMove($index)"><span>{{move.Description}}</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-
-
-            </div>
-            <div class="btn btn-primary" ng-click="prevMove()"><span class="glyphicon glyphicon-chevron-left"></span>prev</div>
-            <div class="btn btn-primary" ng-click="nextMove()">next<span class="glyphicon glyphicon-chevron-right"></span></div>
-        </div>
-        <div class="col-xs-3 panel" style="width: 400px">
+        <div class="col-sm-6" style="width: 400px">
             <h3>{{boardHeader}}</h3>
             <div id="board"></div>
         </div>
-      
+        <div class="col-sm-6">
+            <p>
+                <div class="btn btn-primary" ng-click="prevMove()"><span class="glyphicon glyphicon-chevron-left"></span>prev</div>
+                <div class="btn btn-primary" ng-click="nextMove()">next<span class="glyphicon glyphicon-chevron-right"></span></div>
+                <div class="btn btn-default" ng-click="showMove(halfMove)">reset <span class="glyphicon glyphicon-refresh"></span></div>
+            </p>
+            <div style="width: 400px; height: 300px;overflow: auto; border: dimgray dashed thin">
+
+                <div ng-show="isLoading">
+                    <img src="~/images/default.gif" width="64" />
+                </div>
+                <div ng-show="!isLoading">
+                    <span ng-repeat="move in viewmodel.AnalyzedMoves track by $index" ng-click="showMove($index)"><span> </span><span ng-class="{'move-selected':$index===halfMove, 'move-normal' : move.Category===0||move.Category===4, 'move-warning' : move.Category===1, ' move-danger' : move.Category===2, 'move-success' : move.Category===3}">{{move.Description}}</span></span>
+                </div>
+
+            </div>
+        </div>
     </div>
 
+
 </div>
+
 
 @section Scripts {
     <script>
         var cfg = {
             pieceTheme: 'chessboardjs-0.3.0/img/chesspieces/wikipedia/{piece}.png',
+            draggable: true
         };
         var board = ChessBoard('board', cfg);
         //--- end example JS ---
