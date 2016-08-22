@@ -7,14 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace DemoSite.Models
 {
-    public class AnalyzedMove
-    {
-        public bool IsWhite { get; set; }
-        public int ActualMoveIndex { get; set; }
-        public string Description { get; set; }
-        public EvaluatedMove[] AllMoves { get; set; }
-        public int Category { get; set; }
-    }
+   
 
     public class EvaluatedMove
     {
@@ -23,6 +16,7 @@ namespace DemoSite.Models
         public string MoveLan { get; set; }
         public int Value { get; set; }
         public int DeltaToBest { get; set; }
+        public EvaluatedMove[] PrincipalVariation { get; set; }
 
     }
 

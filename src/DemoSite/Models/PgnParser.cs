@@ -59,7 +59,7 @@ namespace ConsoleApp1
                 Debug.WriteLine("parsing move: "+elements[i]);
                 var moves = b.GenerateMoves();
                 b.PopulateSan(moves);
-                var r = moves.Single(x => x.San.ToLower() == elements[i].Replace("+", ""));
+                var r = moves.Single(x => x.San.ToLower() == elements[i].Replace("+", "").Replace("#", ""));
                 lan.Add(r.Text);
                 san.Add(r.San);
                 

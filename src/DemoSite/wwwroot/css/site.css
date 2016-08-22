@@ -1,5 +1,5 @@
 ﻿body {
-    padding-top: 50px;
+    padding-top: 30px;
     padding-bottom: 20px;
 }
 
@@ -14,19 +14,23 @@
 input,
 select,
 textarea {
-    max-width: 280px;
+    max-width: 380px;
 }
 
-.move-danger {
-    background-color: #f66;
-    color: #600;
-    font-weight: bold;
+.move {
     font-family: monospace, monospace;
     font-size: 1.1em;
     padding: 2px;
     margin: 2px;
     border-radius: 5px;
     display: inline-block;
+    cursor: pointer;
+}
+
+.move-danger {
+    background-color: #f66;
+    color: #600;
+    font-weight: bold;
 }
 
 .move-selected {
@@ -37,34 +41,77 @@ textarea {
 .move-normal {
     border-radius: 25px;
     background: #fff;
-    font-family: monospace, monospace;
-    font-size: 1.1em;
-    padding: 2px;
-    margin: 2px;
-    border-radius: 5px;
-    display: inline-block;
 }
 
 .move-success {
     background-color: #6f6;
     color: #060;
     font-weight: bold;
-    font-family: monospace, monospace;
-    font-size: 1.1em;
-    padding: 2px;
-    margin: 2px;
-    border-radius: 5px;
-    display: inline-block;
 }
 
 .move-warning {
     background-color: #ff6;
     color: #660;
     font-weight: bold;
-    font-family: monospace, monospace;
-    font-size: 1.1em;
-    padding: 2px;
-    margin: 2px;
-    border-radius: 5px;
-    display: inline-block;
+}
+
+a:active, a:hover, a:visited {
+    outline: 0;
+    cursor: pointer;
+}
+
+.container {
+    margin-top: 10px;
+}
+
+.progress-bar-vertical {
+    width: 20px;
+    min-height: 100px;
+    display: flex;
+    align-items: flex-end;
+    margin-right: 20px;
+    float: left;
+}
+
+    .progress-bar-vertical .progress-bar {
+        width: 100%;
+        height: 0;
+        -webkit-transition: height 0.6s ease;
+        -o-transition: height 0.6s ease;
+        transition: height 0.6s ease;
+    }
+
+.score-bar-white {
+    background-image: -webkit-linear-gradient(top, #f0d9b5 0%, #f0d9b5 100%);
+    background-image: -o-linear-gradient(top, #f0d9b5 0%, #f0d9b5 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#f0d9b5), to(#f0d9b5));
+    background-image: linear-gradient(to bottom, #f0d9b5 0%, #f0d9b5 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f0d9b5', endColorstr='#f0d9b5', GradientType=0);
+    background-repeat: repeat-x;
+    color: #000;
+}
+
+.score-bar-black {
+    background-image: -webkit-linear-gradient(top, #b58863 0%, #b58863 100%);
+    background-image: -o-linear-gradient(top, #b58863 0%, #b58863 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#b58863), to(#b58863));
+    background-image: linear-gradient(to bottom, #b58863 0%, #b58863 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#b58863', endColorstr='#b58863', GradientType=0);
+    background-repeat: repeat-x;
+}
+
+.tab-content {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+}
+
+.nav-tabs {
+    margin-bottom: 0;
+}
+
+.game-content {
+    height: 380px;
+    overflow: auto;
 }

@@ -1,0 +1,78 @@
+﻿@model ShowGameViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div ng-app="gameShowApp" ng-controller="gameShowCtrl">
+    <div class="page-header">
+        <h1>Games</h1>
+    </div>
+    <div class="row">
+        <div class="col-sm-6" style="height: 500px; width: 400px">
+            <h3>{{boardHeader}}</h3>
+            <div id="board"></div>
+            <p>
+                <div class="btn btn-default" ng-click="prevMove()" style="width: 140px"><span class="glyphicon glyphicon-chevron-left"></span>prev</div>
+                <div class="btn btn-default" ng-click="showMove(halfMove)">reset <span class="glyphicon glyphicon-refresh"></span></div>
+                <div class="btn btn-default" ng-click="nextMove()" style="width:140px">next<span class="glyphicon glyphicon-chevron-right"></span></div>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <h3>&nbsp;</h3>
+            <div>
+
+                <div ng-show="isLoading">
+                    <img src="~/images/default.gif" width="64" />
+                </div>
+                <div ng-show="!isLoading">
+                    <ul class="nav nav-tabs">
+                        <li ng-class="{'active' : !analysisMode}" ng-click="setAnalysisMode(false)"><a>Moves</a></li>
+                        <li ng-class="{'active' : analysisMode}" ng-click="setAnalysisMode(true)"><a>Analysis</a></li>
+                    </ul>
+                    <div class="tab-content game-content" ng-show="analysisMode">
+                        <div class="progress">
+                            <div class="progress-bar score-bar-white" role="progressbar" ng-style="progressStyleWhite">
+                                white {{positionValue/100}} pawns
+                            </div>
+                            <div class="progress-bar score-bar-black" role="progressbar" ng-style="progressStyleBlack">
+                                black {{-positionValue/100}} pawns
+                            </div>
+                        </div>
+                        <p>
+                            <div class="btn btn-default" ng-click="prevVariationMove()"><span class="glyphicon glyphicon-chevron-left"></span>prev</div>
+                            <div class="btn btn-default" ng-click="nextVariationMove()">next<span class="glyphicon glyphicon-chevron-right"></span></div>
+                        </p>
+                        <p>{{analysisHeader}}</p>
+                        <span ng-repeat="move in bestMove.PrincipalVariation track by $index" ng-click="showPrincipalVariation($index)">
+                            <span> </span>
+                            <span class="move" ng-class="{'move-selected':$index===variationHalfMove}">{{move.MoveSan}}</span>
+                        </span>
+                    </div>
+                    <div class="tab-content game-content" ng-show="!analysisMode">
+                        <span ng-repeat="move in viewmodel.AnalyzedMoves track by $index" ng-click="showMove($index)">
+                            <span> </span>
+                            <span class="move" ng-class="{'move-selected':$index===halfMove, 'move-normal' : move.Category===0||move.Category===4, 'move-warning' : move.Category===1, ' move-danger' : move.Category===2, 'move-success' : move.Category===3}">{{move.Description}}</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+@section Scripts {
+    <script>
+        var globalViewModel = { gameId: @Model.Id };
+
+        var cfg = {
+            pieceTheme: '/chessboardjs-0.3.0/img/chesspieces/wikipedia/{piece}.png',
+            draggable: true
+        };
+        var board = ChessBoard('board', cfg);
+        //--- end example JS ---
+    </script>
+    <script src="~/js/gameShowApp.js"></script>
+}
