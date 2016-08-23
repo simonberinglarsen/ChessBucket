@@ -46,18 +46,21 @@ namespace DemoSite.Controllers
             //parser.LoadPgn(System.IO.File.ReadAllText(@"C:\Users\bc0618\Desktop\simon\partier\IMG_20160813_184158.pgn"));
             parser.LoadPgn(pgnText);
 
-            // store game in database
-            GameData gd = new GameData();
-            gd.Analyzed = false;
-            if (MockedDatabase.Instance.Games.Count() == 0)
-                gd.Id = 1;
-            else
-                gd.Id = MockedDatabase.Instance.Games.Max(x => x.Id) + 1;
-            gd.MovesLan = parser.MovesLan;
-            gd.MovesSan = parser.MovesSan;
-            MockedDatabase.Instance.Games.Add(gd);
+            foreach (var game in parser.PgnGames)
+            {
+                // store game in database
+                GameData gd = new GameData();
+                gd.Analyzed = false;
+                if (MockedDatabase.Instance.Games.Count() == 0)
+                    gd.Id = 1;
+                else
+                    gd.Id = MockedDatabase.Instance.Games.Max(x => x.Id) + 1;
+                gd.Headers = game.Headers;
+                gd.MovesLan = game.MovesLan;
+                gd.MovesSan = game.MovesSan;
+                MockedDatabase.Instance.Games.Add(gd);
+            }
             MockedDatabase.Instance.Save();
-
             // return result?
             return JsonConvert.SerializeObject(new { });
         }
@@ -91,7 +94,7 @@ namespace DemoSite.Controllers
             GameData gd = MockedDatabase.Instance.Games.FirstOrDefault(g => !g.Analyzed);
             if (gd == null) return;
 
-            gd.AnalyzedMoves = Analyze.Game(gd.MovesLan.ToList());
+            gd.AnalyzedMoves = Analyze.Game(gd.MovesLan);
             gd.Analyzed = true;
             MockedDatabase.Instance.Save();
         }

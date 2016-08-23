@@ -17,7 +17,7 @@ namespace DemoSite.Models
         public bool BlackCanCastleShort;
         public bool BlackCanCastleLong;
         public bool WhitesTurn { get; set; }
-        public int EnpassantIndex { get; set; }
+        public int EnpassantSquare { get; set; }
         //This is the number of halfmoves since the last capture or pawn advance.This is used to determine if a draw can be claimed under the fifty-move rule.
         public int HalfmoveClock { get; set; }
         //The number of the full move. It starts at 1, and is incremented after Black's move.        
@@ -120,8 +120,8 @@ namespace DemoSite.Models
                 WhitesTurn = true;
             }
             // do move as white
-            bool isCapture = _board[move.ToNumber] != 0;
-            bool isPawnMove = _board[move.FromNumber] == 1;
+            bool isCapture = _board[move.ToSquare] != 0;
+            bool isPawnMove = _board[move.FromSquare] == 1;
             if (isCapture || isPawnMove) HalfmoveClock = 0;
             if (_isInverted) FullmoveNumber++;
             DoMoveAsWhite(move);
@@ -138,7 +138,7 @@ namespace DemoSite.Models
         {
             FullmoveNumber = 1;
             HalfmoveClock = 0;
-            EnpassantIndex = 0;
+            EnpassantSquare = 0;
             WhitesTurn = true;
             WhiteCanCastleShort = false;
             WhiteCanCastleLong = false;
@@ -236,8 +236,8 @@ namespace DemoSite.Models
             sb.Append(BlackCanCastleLong ? "q" : "");
             sb.Append(!BlackCanCastleLong && !BlackCanCastleShort && !WhiteCanCastleLong && !WhiteCanCastleShort ? "-" : "");
 
-            string enpassantSquare = "" + (char)('a' + (EnpassantIndex % 8)) + (char)('1' + (EnpassantIndex / 8));
-            sb.Append(" " + (EnpassantIndex == 0 ? "-" : enpassantSquare));
+            string enpassantSquare = "" + (char)('a' + (EnpassantSquare % 8)) + (char)('1' + (EnpassantSquare / 8));
+            sb.Append(" " + (EnpassantSquare == 0 ? "-" : enpassantSquare));
             sb.Append(" " + HalfmoveClock);
             sb.Append(" " + FullmoveNumber);
             return sb.ToString();
@@ -275,62 +275,13 @@ namespace DemoSite.Models
             WhiteCanCastleLong = blocks[2].Contains('Q');
             BlackCanCastleShort = blocks[2].Contains('k');
             BlackCanCastleLong = blocks[2].Contains('q');
-            EnpassantIndex = blocks[3] == "-" ? 0 : (char.ToUpper(blocks[3][0]) - 'A') + 8 * (blocks[3][1] - '1');
+            EnpassantSquare = blocks[3] == "-" ? 0 : (char.ToUpper(blocks[3][0]) - 'A') + 8 * (blocks[3][1] - '1');
             HalfmoveClock = int.Parse(blocks[4]);
             FullmoveNumber = int.Parse(blocks[5]);
 
 
         }
 
-
-        public void DumpHtml(string movetext, Move[] moves)
-        {
-            StringBuilder sb = new StringBuilder();
-            string output = ".PRNBQKprnbqk";
-            for (int r = 7; r >= 0; r--)
-            {
-                for (int f = 0; f < 8; f++)
-                {
-                    int i = r * 8 + f;
-                    if (_board[i] != 0)
-                    {
-                        sb.Append("" + (char)('a' + f) + (char)('1' + r) + ": '");
-                        char l = output[_board[i]];
-                        sb.Append(char.IsLower(l) ? "b" : "w");
-                        sb.AppendLine(char.ToUpper(l) + "',");
-                    }
-                }
-            }
-            string text = File.ReadAllText("TextFile1.txt");
-            StringBuilder moveHtml = new StringBuilder();
-            for (int i = 0; i < moves.Length; i++)
-            {
-                moveHtml.AppendLine(moves[i].Text + "<br/>");
-            }
-
-            File.WriteAllText("board.html",
-                text.Replace(@"{{0}}",
-                sb.ToString())
-                    .Replace(@"{{1}}", movetext)
-                    .Replace(@"{{2}}",
-                moveHtml.ToString()));
-        }
-
-        public string DumpAscii()
-        {
-            StringBuilder sb = new StringBuilder();
-            string output = ".PRNBQKprnbqk";
-            for (int r = 7; r >= 0; r--)
-            {
-                sb.AppendLine();
-                for (int f = 0; f < 8; f++)
-                {
-                    int i = r * 8 + f;
-                    sb.Append(output[_board[i]]);
-                }
-            }
-            return sb.ToString();
-        }
         private void Invert()
         {
             for (int i = 0; i < 32; i++)
@@ -344,8 +295,8 @@ namespace DemoSite.Models
                 _board[63 - i] = square2;
                 _board[i] = square1;
             }
-            if (EnpassantIndex > 0)
-                EnpassantIndex = 63 - EnpassantIndex;
+            if (EnpassantSquare > 0)
+                EnpassantSquare = 63 - EnpassantSquare;
             bool tempShort = WhiteCanCastleShort;
             bool tempLong = WhiteCanCastleLong;
             WhiteCanCastleShort = BlackCanCastleShort;
@@ -365,7 +316,6 @@ namespace DemoSite.Models
                     break;
             }
         }
-
         private Move[] LegalPawnMoves(int s)
         {
             List<Move> all = new List<Move>();
@@ -389,8 +339,8 @@ namespace DemoSite.Models
             {
                 if (rank7 && _board[attack] >= 7)
                     all.AddRange(new[] { new Move(s, attack, 2), new Move(s, attack, 3), new Move(s, attack, 4), new Move(s, attack, 5) });
-                else if (rank5 && _board[attack] == 0 && (EnpassantIndex == attack))
-                    all.Add(new Move(s, attack) { EnpassantCapture = true });
+                else if (rank5 && _board[attack] == 0 && (EnpassantSquare == attack))
+                    all.Add(new Move(s, attack));
                 else if (!rank7 && _board[attack] >= 7)
                     all.Add(new Move(s, attack));
             }
@@ -475,33 +425,32 @@ namespace DemoSite.Models
         {
             // setup undo
             UndoAsWhite undo = new UndoAsWhite();
-            undo.FromNumber = move.FromNumber;
-            undo.ToNumber = move.ToNumber;
-            undo.EnpassentIndex = EnpassantIndex;
-            undo.EnpassantCapture = move.EnpassantCapture;
-            undo.BoardFrom = _board[move.FromNumber];
-            undo.BoardTo = _board[move.ToNumber];
+            undo.FromSquare = move.FromSquare;
+            undo.ToSquare = move.ToSquare;
+            undo.EnpassantSquare = EnpassantSquare;
+            undo.OriginalPieceOnFromSquare = _board[move.FromSquare];
+            undo.OriginalPieceOnToSquare = _board[move.ToSquare];
             undo.WhiteCanCastleLong = WhiteCanCastleLong;
             undo.WhiteCanCastleShort = WhiteCanCastleShort;
             // do move
             if (move.IsPromoting)
-                _board[move.ToNumber] = move.PromoteTo;
+                _board[move.ToSquare] = move.PromoteTo;
             else
-                _board[move.ToNumber] = _board[move.FromNumber];
-            _board[move.FromNumber] = 0;
-            bool kingMove = _board[move.ToNumber] == 6;
-            int kingSpeed = kingMove ? move.ToNumber - move.FromNumber : 0;
+                _board[move.ToSquare] = _board[move.FromSquare];
+            _board[move.FromSquare] = 0;
+            bool kingMove = _board[move.ToSquare] == 6;
+            int kingSpeed = kingMove ? move.ToSquare - move.FromSquare : 0;
             // castle right
             if (kingSpeed == 2)
             {
                 _board[7] = 0;
-                _board[move.ToNumber - 1] = 2;
+                _board[move.ToSquare - 1] = 2;
             }
             // castle left
             if (kingSpeed == -2)
             {
                 _board[0] = 0;
-                _board[move.ToNumber + 1] = 2;
+                _board[move.ToSquare + 1] = 2;
             }
             // no castling after king/rook moves
             if (kingMove)
@@ -509,49 +458,51 @@ namespace DemoSite.Models
                 WhiteCanCastleLong = false;
                 WhiteCanCastleShort = false;
             }
-            bool leftRookMove = _board[move.ToNumber] == 2 && move.FromNumber == 0;
+            bool leftRookMove = _board[move.ToSquare] == 2 && move.FromSquare == 0;
             if (leftRookMove && _isInverted) WhiteCanCastleShort = false;
             if (leftRookMove && !_isInverted) WhiteCanCastleLong = false;
-            bool rightRookMove = _board[move.ToNumber] == 2 && move.FromNumber == 7;
+            bool rightRookMove = _board[move.ToSquare] == 2 && move.FromSquare == 7;
             if (rightRookMove && _isInverted) WhiteCanCastleLong = false;
             if (rightRookMove && !_isInverted) WhiteCanCastleShort = false;
 
             // enpassant
-            if (move.EnpassantCapture)
-                _board[move.ToNumber - 8] = 0;
+            bool enpassantCapture = (move.ToSquare - move.FromSquare) % 8 != 0 && undo.OriginalPieceOnToSquare == 0 && undo.OriginalPieceOnFromSquare == 1;
+            if (enpassantCapture)
+                _board[move.ToSquare - 8] = 0;
             // pawn moves two ranks
-            bool blackPawnToLeft = move.ToNumber % 8 != 0 && _board[move.ToNumber - 1] == 7;
-            bool blackPawnToRight = move.ToNumber % 8 != 7 && _board[move.ToNumber + 1] == 7;
+            bool blackPawnToLeft = move.ToSquare % 8 != 0 && _board[move.ToSquare - 1] == 7;
+            bool blackPawnToRight = move.ToSquare % 8 != 7 && _board[move.ToSquare + 1] == 7;
             bool pawnNextToThis = blackPawnToLeft || blackPawnToRight;
-            if (_board[move.ToNumber] == 1 && (move.ToNumber - move.FromNumber == 16) && pawnNextToThis)
+            if (_board[move.ToSquare] == 1 && (move.ToSquare - move.FromSquare == 16) && pawnNextToThis)
             {
-                EnpassantIndex = move.ToNumber - 8;
+                EnpassantSquare = move.ToSquare - 8;
             }
             else
-                EnpassantIndex = 0;
+                EnpassantSquare = 0;
             return undo;
         }
         private void UndoMoveAsWhite(UndoAsWhite undoMove)
         {
-            _board[undoMove.FromNumber] = undoMove.BoardFrom;
-            _board[undoMove.ToNumber] = undoMove.BoardTo;
-            if (undoMove.EnpassantCapture)
-                _board[undoMove.ToNumber - 8] = 7;
-            bool kingMove = _board[undoMove.FromNumber] == 6;
-            int kingSpeed = kingMove ? undoMove.ToNumber - undoMove.FromNumber : 0;
+            _board[undoMove.FromSquare] = undoMove.OriginalPieceOnFromSquare;
+            _board[undoMove.ToSquare] = undoMove.OriginalPieceOnToSquare;
+            bool enpassantCapture = (undoMove.ToSquare - undoMove.FromSquare) % 8 != 0 && undoMove.OriginalPieceOnToSquare == 0 && undoMove.OriginalPieceOnFromSquare == 1;
+            if (enpassantCapture)
+                _board[undoMove.ToSquare - 8] = 7;
+            bool kingMove = _board[undoMove.FromSquare] == 6;
+            int kingSpeed = kingMove ? undoMove.ToSquare - undoMove.FromSquare : 0;
             // undo castle short?
             if (kingSpeed == 2)
             {
                 _board[7] = 2;
-                _board[undoMove.ToNumber - 1] = 0;
+                _board[undoMove.ToSquare - 1] = 0;
             }
             // castle left
             if (kingSpeed == -2)
             {
                 _board[0] = 2;
-                _board[undoMove.ToNumber + 1] = 0;
+                _board[undoMove.ToSquare + 1] = 0;
             }
-            EnpassantIndex = undoMove.EnpassentIndex;
+            EnpassantSquare = undoMove.EnpassantSquare;
             WhiteCanCastleShort = undoMove.WhiteCanCastleShort;
             WhiteCanCastleLong = undoMove.WhiteCanCastleLong;
         }
@@ -660,28 +611,27 @@ namespace DemoSite.Models
             }
             return all.ToArray();
         }
-
-
         public void PopulateSan(Move[] moves)
         {
             string pieces = ".PRNBQKPRNBQK";
             foreach (var m in moves)
             {
-                char piece = pieces[_board[m.FromNumber]];
-                int moveSpeed = Math.Abs(m.FromNumber - m.ToNumber);
+                char piece = pieces[_board[m.FromSquare]];
+                int moveSpeed = Math.Abs(m.FromSquare - m.ToSquare);
                 if (piece == 'K' && moveSpeed == 2)
                 {
-                    m.San = (m.ToNumber == 2 || m.ToNumber == 58) ? "o-o-o" : "o-o";
+                    m.San = (m.ToSquare == 2 || m.ToSquare == 58) ? "O-O-O" : "O-O";
                     continue;
                 }
-                string destinationInfo = m.Text.Substring(2);
+                string destinationInfo = m.Lan.Substring(2,2);
                 string promotionInfo = "";
                 if (m.IsPromoting) promotionInfo = "=" + pieces[m.PromoteTo];
-                bool capture = _board[m.ToNumber] != 0 || m.EnpassantCapture;
+                bool enpassantCapture = Math.Abs(m.ToSquare - m.FromSquare) % 8 != 0 && _board[m.ToSquare] == 0 && piece=='P';
+                bool capture = _board[m.ToSquare] != 0 || enpassantCapture;
                 string captureInfo = capture ? "x" : "";
                 string pieceInfo;
                 if (capture && piece == 'P')
-                    pieceInfo = "" + m.Text[0];
+                    pieceInfo = "" + m.Lan[0];
                 else
                     pieceInfo = piece != 'P' ? "" + piece : "";
                 m.San = string.Format("{0}{1}{2}{3}", pieceInfo, captureInfo, destinationInfo, promotionInfo);
@@ -696,70 +646,51 @@ namespace DemoSite.Models
             {
                 foreach (var m in grp.list)
                 {
-                    if (grp.list.Any(x => x != m && m.Text[0] == x.Text[0]))
+                    if (grp.list.Any(x => x != m && m.Lan[0] == x.Lan[0]))
                     {
-                        if (grp.list.Any(x => x != m && m.Text[1] == x.Text[1]))
-                            m.San = m.San.Insert(1, m.Text.Substring(0, 2));
+                        if (grp.list.Any(x => x != m && m.Lan[1] == x.Lan[1]))
+                            m.San = m.San.Insert(1, m.Lan.Substring(0, 2));
                         else
-                            m.San = m.San.Insert(1, "" + m.Text[1]);
+                            m.San = m.San.Insert(1, "" + m.Lan[1]);
                     }
                     else
-                        m.San = m.San.Insert(1, "" + m.Text[0]);
+                        m.San = m.San.Insert(1, "" + m.Lan[0]);
                 }
             }
 
         }
-
-        public Move MoveFromText(string moveText)
-        {
-            Move m = Move.FromText(moveText);
-            int pieceType = _board[m.FromNumber];
-            if ((pieceType == 1 || pieceType == 7) && Math.Abs(m.ToNumber - m.FromNumber) % 8 != 0 && _board[m.ToNumber] == 0)
-                m.EnpassantCapture = true;
-            return m;
-        }
+        
     }
     public class Move
     {
         private const string pieceCodes = ".prnbqkprnbqk";
-        public int FromNumber { get; set; }
-        public int ToNumber { get; set; }
-        public bool EnpassantCapture { get; set; }
+        public int FromSquare { get; set; }
+        public int ToSquare { get; set; }
         public int PromoteTo { get; set; }
+        public string Lan
+        {
+            get { return SquareIndexToAlgebraicNotation(FromSquare) + SquareIndexToAlgebraicNotation(ToSquare) + (IsPromoting ? "" + pieceCodes[PromoteTo] : ""); }
+        }
+        public string San { get; set; }
         public bool IsPromoting
         {
             get { return PromoteTo != 0; }
         }
         public Move(int src, int dst)
         {
-            FromNumber = src;
-            ToNumber = dst;
+            FromSquare = src;
+            ToSquare = dst;
         }
         public Move(int src, int dst, int p) : this(src, dst)
         {
             PromoteTo = p;
         }
-        public string Text
-        {
-            get { return itoa(FromNumber) + itoa(ToNumber) + (IsPromoting ? "" + pieceCodes[PromoteTo] : ""); }
-        }
-
-        public string San { get; set; }
-
-        private string itoa(int i)
-        {
-            int x = i % 8;
-            int y = i / 8;
-            string a = "" + (char)('a' + x) + (char)('1' + y);
-            return a;
-        }
         public void Invert()
         {
-            FromNumber = 63 - FromNumber;
-            ToNumber = 63 - ToNumber;
+            FromSquare = 63 - FromSquare;
+            ToSquare = 63 - ToSquare;
         }
-
-        public static Move FromText(string move)
+        public static Move FromLan(string move)
         {
             move = move.Trim().ToUpper();
             int src = (move[0] - 'A') + (move[1] - '1') * 8;
@@ -768,22 +699,22 @@ namespace DemoSite.Models
             int p = move.Length < 5 ? 0 : promoteChars.IndexOf(move[4]);
             return new Move(src, dst, p);
         }
+        private string SquareIndexToAlgebraicNotation(int i)
+        {
+            int x = i % 8;
+            int y = i / 8;
+            string a = "" + (char)('a' + x) + (char)('1' + y);
+            return a;
+        }
     }
     public class UndoAsWhite
     {
-        public bool EnpassantCapture { get; internal set; }
-        public int FromNumber { get; set; }
-        public int ToNumber { get; internal set; }
-        public int EnpassentIndex { get; internal set; }
-        public int BoardFrom { get; internal set; }
-        public int BoardTo { get; internal set; }
-        public bool WhiteCanCastleLong { get; internal set; }
-        public bool WhiteCanCastleShort { get; internal set; }
-
-        public void Invert()
-        {
-            FromNumber = 63 - FromNumber;
-            ToNumber = 63 - ToNumber;
-        }
+        public int FromSquare { get; set; }
+        public int ToSquare { get; set; }
+        public int EnpassantSquare { get; set; }
+        public int OriginalPieceOnFromSquare { get; set; }
+        public int OriginalPieceOnToSquare { get; set; }
+        public bool WhiteCanCastleLong { get; set; }
+        public bool WhiteCanCastleShort { get; set; }
     }
 }

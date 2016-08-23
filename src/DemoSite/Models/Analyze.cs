@@ -11,9 +11,10 @@ namespace DemoSite.Models
 {
     public class Analyze
     {
-        public static AnalyzedMove[] Game(List<string> moveList)
+        public static AnalyzedMove[] Game(string[] moveList)
         {
-            int depth = 10;
+            System.Diagnostics.Debug.WriteLine("Analyze.Game: "+moveList[0] ?? ""+"...");
+            int depth = 5;
             string beforeFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
             using (var proxy = new SFProxy())
             {
@@ -23,12 +24,7 @@ namespace DemoSite.Models
                 StringBuilder moveSequence = new StringBuilder();
                 foreach (var moveText in moveList)
                 {
-                    if(moveText == "g2g4")
-                    {
-                        int k = 8;
-                    }
-                    System.Diagnostics.Debug.WriteLine(moveText);
-                    Move gameMove = b.MoveFromText(moveText);
+                    Move gameMove = Move.FromLan(moveText);
                     AnalyzedMove analyzedMove = new AnalyzedMove();
                     analyzedMove.IsWhite = b.WhitesTurn;
                     // sanity check ... to be removed
@@ -38,9 +34,9 @@ namespace DemoSite.Models
                         throw new Exception("last move failed! - >" + moveSequence.ToString());
                     }
                     // array of actual- and bestmove
-                    analyzedMove.BestMove = proxy.Go(moveSequence.ToString(), depth);
+                    analyzedMove.BestMove = proxy.Go(moveSequence, depth);
                     if(analyzedMove.BestMove.MoveLan != moveText)
-                        analyzedMove.ActualMove = proxy.Go(moveSequence.ToString(), depth, moveText);
+                        analyzedMove.ActualMove = proxy.Go(moveSequence, depth, moveText);
 
                     b.DoMove(gameMove);
                     analyzedMoves.Add(analyzedMove);

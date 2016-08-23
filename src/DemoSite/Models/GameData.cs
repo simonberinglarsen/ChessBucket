@@ -13,5 +13,6 @@ namespace DemoSite.Models
         public bool Analyzed { get; set; }
         public AnalyzedMove[] AnalyzedMoves { get; set; }
         public string Tag { get; set; }
+        public Dictionary<string, string> Headers { get; set; }
     }
 }
