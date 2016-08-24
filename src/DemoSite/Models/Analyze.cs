@@ -11,10 +11,9 @@ namespace DemoSite.Models
 {
     public class Analyze
     {
-        public static AnalyzedMove[] Game(string[] moveList)
+        public static AnalyzedMove[] Game(string[] moveList, int depth)
         {
-            System.Diagnostics.Debug.WriteLine("Analyze.Game: "+moveList[0] ?? ""+"...");
-            int depth = 5;
+            System.Diagnostics.Debug.WriteLine("Analyze.Game");
             string beforeFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
             using (var proxy = new SFProxy())
             {

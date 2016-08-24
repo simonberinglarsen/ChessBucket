@@ -38,7 +38,6 @@ namespace ConsoleApp1
             string beforeFen = FenAfterMoves(moveSequence.ToString());
             string moves = moveSequence.ToString() + " " + specificMove;
             bool reverse = !string.IsNullOrWhiteSpace(specificMove);
-            if (reverse) evalMove.Fen = FenAfterMoves(moves);
             string bestLine = "";
             _proc.StandardInput.WriteLine("position startpos moves " + moves);
             _proc.StandardInput.WriteLine("go depth " + depth);
@@ -75,7 +74,6 @@ namespace ConsoleApp1
                     else
                     {
                         evalMove.MoveLan = (pv+" ").Substring(0, 5).Trim();
-                        if (!reverse) evalMove.Fen = FenAfterMoves(moves + " " + evalMove.MoveLan);
                         Board b = new Board();
                         b.Setup(beforeFen);
                         var m = b.GenerateMoves();
@@ -101,7 +99,6 @@ namespace ConsoleApp1
                                 ee.Value = evalMove.Value;
                                 ee.MoveLan = move;
                                 ee.MoveSan = xx.Single(x => x.Lan == move).San;
-                                ee.Fen = FenAfterMoves(moves + ff);
                                 qq.Add(ee);
                                 b.DoMove(Move.FromLan(move));
                             }

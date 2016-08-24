@@ -29,6 +29,7 @@
         $scope.selectGame = function (gameId) {
             $window.location.href = '/game/show/' + gameId;
         }
+        $scope.search();
     }]);
 
 })(window.angular);

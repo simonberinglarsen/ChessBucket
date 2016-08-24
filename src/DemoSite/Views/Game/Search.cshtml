@@ -3,43 +3,43 @@
 }
 <div ng-app="gameSearchApp" ng-controller="gameSearchCtrl">
     <div class="page-header">
-        <h1>Search</h1>
+        <h1>
+            Search
+        </h1>
     </div>
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="input-group">
-                <span class="input-group-btn" style="width: 0;">
-                    <button onclick="location.href='@Url.Action("Upload")'" class="btn btn-success"> <strong>+</strong></button>
-                </span>
-                <input type="text" class="form-control" placeholder="Search text" style="width: 400px" ng-model="searchText" />
-                <div class="input-group-btn" style="width: 0;">
-                    <button ng-click="search()" class="btn btn-default">Go!</button>
-                </div>
-            </div>
+    <div class="input-group">
+        <span class="input-group-btn" style="width: 0;">
+            <button onclick="location.href='@Url.Action("Upload")'" class="btn btn-success"> <strong>+</strong></button>
+        </span>
+        <input type="text" class="form-control" placeholder="Search text" style="width: 400px" ng-model="searchText" />
+        <div class="input-group-btn" style="width: 0;">
+            <button ng-click="search()" class="btn btn-default">Go!</button>
         </div>
     </div>
-    <div style="height: 20px"></div>
     <p>
         <div class="btn btn-primary" ng-click="prev()">
             <span class="glyphicon glyphicon-chevron-left"></span>prev
         </div>
-        <div class="btn btn-primary" ng-click="next()">next<span class="glyphicon glyphicon-chevron-right"></span></div>
+        <div class="btn btn-primary" ng-click="next()">
+            next
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </div>
+        <img ng-show="isLoading" src="~/images/default.gif" style="height:20px" />
+
     </p>
     <div class="list-group">
         <div ng-show="!isLoading">
             <a class="list-group-item list-group-item-action" ng-repeat="result in viewmodel.SearchResults track by $index" ng-click="selectGame(result.GameId)">
-                <h5 class="list-group-item-heading">header</h5>
+                <h5 class="list-group-item-heading"><strong><span class="label label-default">{{result.Date}}</span> {{result.Event}} ({{result.Site}}) - Round {{result.Round}}</strong></h5>
                 <p class="list-group-item-text">
-                    {{result.GameId}}
+                    {{result.White}} vs. {{result.Black}} ({{result.Result}})
                 </p>
             </a>
-        </div>
-        <div ng-show="isLoading">
-            <img src="~/images/default.gif" width="64" />
+            <a class="list-group-item list-group-item-action" ng-show="viewmodel.SearchResults.length == 0">
+                <h5 class="list-group-item-heading">No results</h5>
+            </a>
         </div>
     </div>
-
-
 </div>
 
 @section Scripts {

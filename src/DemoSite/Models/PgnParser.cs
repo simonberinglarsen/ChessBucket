@@ -21,14 +21,14 @@ namespace DemoSite.Models
         private enum State
         {
             NewGame,
-            FindHeader,
+            FindHeaderOrGame,
             ReadHeader,
             ReadGame
         }
 
         private void Parse(string pgn)
         {
-            Debug.WriteLine("PgnParser.Parse ("+pgn.Substring(0,12)+"...)");
+            Debug.WriteLine("PgnParser.Parse");
             int i = 0;
             string[] e;
             State state = State.NewGame;
@@ -36,13 +36,14 @@ namespace DemoSite.Models
             StringBuilder buffer = new StringBuilder();
             while (i < pgn.Length)
             {
+                buffer.Append(pgn[i]);
                 switch (state)
                 {
                     case State.NewGame:
                         all.Add(new PgnGame());
-                        state = State.FindHeader;
+                        state = State.FindHeaderOrGame;
                         continue;
-                    case State.FindHeader:
+                    case State.FindHeaderOrGame:
                         if (" \n\r".IndexOf(pgn[i]) > 0)
                         {
                             i++;
@@ -70,10 +71,10 @@ namespace DemoSite.Models
                             string tag = e[0].Trim();
                             string value = e[1].Trim();
                             var last = all.Last();
-                            last.Headers.Add(tag, value);
+                            last.Headers.Add(tag.ToUpper(), value);
                             buffer.Clear();
                             i++;
-                            state = State.FindHeader;
+                            state = State.FindHeaderOrGame;
                             continue;
                         }
                         break;
@@ -92,7 +93,6 @@ namespace DemoSite.Models
                     default:
                         throw new Exception("unknown state in pgn parser!");
                 }
-                buffer.Append(pgn[i]);
                 i++;
             }
             PgnGames = all.ToArray();
@@ -103,7 +103,7 @@ namespace DemoSite.Models
 
         private void ParseMoves(PgnGame pgnGame, string pgnMoves)
         {
-            Debug.WriteLine("PgnParser.ParseMoves ("+ pgnMoves.Substring(0,12)+"...)");
+            Debug.WriteLine("PgnParser.ParseMoves");
             Board b = new Board();
             b.StartPosition();
             string[] elements = pgnMoves.Replace('\r', ' ').Replace('\n', ' ').Split(new char[] { ' ', '.' }, StringSplitOptions.RemoveEmptyEntries);

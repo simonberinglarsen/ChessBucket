@@ -11,7 +11,6 @@ namespace DemoSite.Models
 
     public class EvaluatedMove
     {
-        public string Fen { get; set; }
         public string MoveSan { get; set; }
         public string MoveLan { get; set; }
         public int Value { get; set; }
