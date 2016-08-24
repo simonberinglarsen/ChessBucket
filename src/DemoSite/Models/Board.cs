@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -46,14 +45,14 @@ namespace DemoSite.Models
         {
             get
             {
-                bool invert = !WhitesTurn;
+                bool blacksTurn = !WhitesTurn;
                 bool isDraw = GenerateMoves().Length == 0;
                 if (isDraw)
                 {
                     // no moves
-                    if (invert) Invert();
+                    if (blacksTurn) Invert();
                     isDraw = KingIsSafe();
-                    if (invert) Invert();
+                    if (blacksTurn) Invert();
                 }
                 else
                 {
@@ -112,8 +111,8 @@ namespace DemoSite.Models
         public void DoMove(Move move)
         {
             HalfmoveClock++;
-            bool invert = !WhitesTurn;
-            if (invert)
+            bool blacksTurn = !WhitesTurn;
+            if (blacksTurn)
             {
                 Invert();
                 move.Invert();
@@ -125,7 +124,7 @@ namespace DemoSite.Models
             if (isCapture || isPawnMove) HalfmoveClock = 0;
             if (_isInverted) FullmoveNumber++;
             DoMoveAsWhite(move);
-            if (invert)
+            if (blacksTurn)
             {
                 Invert();
                 move.Invert();
@@ -247,7 +246,7 @@ namespace DemoSite.Models
         {
             string pieces = ".PRNBQKprnbqk";
 
-            string[] blocks = fen.Trim().Split(new char[] { ' ' });
+            string[] blocks = fen.Trim().Split(' ');
             string boardInfo = blocks[0];
             boardInfo = boardInfo
                .Replace("/", "")
@@ -278,8 +277,6 @@ namespace DemoSite.Models
             EnpassantSquare = blocks[3] == "-" ? 0 : (char.ToUpper(blocks[3][0]) - 'A') + 8 * (blocks[3][1] - '1');
             HalfmoveClock = int.Parse(blocks[4]);
             FullmoveNumber = int.Parse(blocks[5]);
-
-
         }
 
         private void Invert()
@@ -345,7 +342,7 @@ namespace DemoSite.Models
                     all.Add(new Move(s, attack));
             }
 
-            return all.Where(m => IsLegalMove(m)).ToArray();
+            return all.Where(IsLegalMove).ToArray();
         }
         private Move[] LegalRookMoves(int s)
         {
@@ -354,7 +351,7 @@ namespace DemoSite.Models
             PseudoLegalMoves(all, s, Range(s, -1, 0));
             PseudoLegalMoves(all, s, Range(s, 0, 1));
             PseudoLegalMoves(all, s, Range(s, 0, -1));
-            return all.Where(m => IsLegalMove(m)).ToArray();
+            return all.Where(IsLegalMove).ToArray();
         }
 
         private Move[] LegalKnightMoves(int s)
@@ -368,7 +365,7 @@ namespace DemoSite.Models
             PseudoLegalMoves(all, s, Range(s, 1, -2, 1));
             PseudoLegalMoves(all, s, Range(s, -1, 2, 1));
             PseudoLegalMoves(all, s, Range(s, -1, -2, 1));
-            return all.Where(m => IsLegalMove(m)).ToArray();
+            return all.Where(IsLegalMove).ToArray();
         }
         private Move[] LegalBishopMoves(int s)
         {
@@ -377,7 +374,7 @@ namespace DemoSite.Models
             PseudoLegalMoves(all, s, Range(s, 1, -1));
             PseudoLegalMoves(all, s, Range(s, -1, 1));
             PseudoLegalMoves(all, s, Range(s, -1, -1));
-            return all.Where(m => IsLegalMove(m)).ToArray();
+            return all.Where(IsLegalMove).ToArray();
         }
         private Move[] LegalQueenMoves(int s)
         {
@@ -390,7 +387,7 @@ namespace DemoSite.Models
             PseudoLegalMoves(all, s, Range(s, -1, 0));
             PseudoLegalMoves(all, s, Range(s, 0, 1));
             PseudoLegalMoves(all, s, Range(s, 0, -1));
-            return all.Where(m => IsLegalMove(m)).ToArray();
+            return all.Where(IsLegalMove).ToArray();
         }
         private Move[] LegalKingMoves(int s)
         {
@@ -403,7 +400,7 @@ namespace DemoSite.Models
             PseudoLegalMoves(all, s, Range(s, 0, -1, 1));
             PseudoLegalMoves(all, s, Range(s, 1, 0, 1));
             PseudoLegalMoves(all, s, Range(s, -1, 0, 1));
-            List<Move> legalMoves = all.Where(m => IsLegalMove(m)).ToList();
+            List<Move> legalMoves = all.Where(IsLegalMove).ToList();
             if (!KingIsSafe() || legalMoves.Count == 0)
                 return legalMoves.ToArray();
             // handle castle moves
@@ -424,14 +421,16 @@ namespace DemoSite.Models
         private UndoAsWhite DoMoveAsWhite(Move move)
         {
             // setup undo
-            UndoAsWhite undo = new UndoAsWhite();
-            undo.FromSquare = move.FromSquare;
-            undo.ToSquare = move.ToSquare;
-            undo.EnpassantSquare = EnpassantSquare;
-            undo.OriginalPieceOnFromSquare = _board[move.FromSquare];
-            undo.OriginalPieceOnToSquare = _board[move.ToSquare];
-            undo.WhiteCanCastleLong = WhiteCanCastleLong;
-            undo.WhiteCanCastleShort = WhiteCanCastleShort;
+            UndoAsWhite undo = new UndoAsWhite
+            {
+                FromSquare = move.FromSquare,
+                ToSquare = move.ToSquare,
+                EnpassantSquare = EnpassantSquare,
+                OriginalPieceOnFromSquare = _board[move.FromSquare],
+                OriginalPieceOnToSquare = _board[move.ToSquare],
+                WhiteCanCastleLong = WhiteCanCastleLong,
+                WhiteCanCastleShort = WhiteCanCastleShort
+            };
             // do move
             if (move.IsPromoting)
                 _board[move.ToSquare] = move.PromoteTo;
@@ -634,7 +633,7 @@ namespace DemoSite.Models
                     pieceInfo = "" + m.Lan[0];
                 else
                     pieceInfo = piece != 'P' ? "" + piece : "";
-                m.San = string.Format("{0}{1}{2}{3}", pieceInfo, captureInfo, destinationInfo, promotionInfo);
+                m.San = $"{pieceInfo}{captureInfo}{destinationInfo}{promotionInfo}";
             }
 
             // make unique
@@ -648,10 +647,7 @@ namespace DemoSite.Models
                 {
                     if (grp.list.Any(x => x != m && m.Lan[0] == x.Lan[0]))
                     {
-                        if (grp.list.Any(x => x != m && m.Lan[1] == x.Lan[1]))
-                            m.San = m.San.Insert(1, m.Lan.Substring(0, 2));
-                        else
-                            m.San = m.San.Insert(1, "" + m.Lan[1]);
+                        m.San = grp.list.Any(x => x != m && m.Lan[1] == x.Lan[1]) ? m.San.Insert(1, m.Lan.Substring(0, 2)) : m.San.Insert(1, "" + m.Lan[1]);
                     }
                     else
                         m.San = m.San.Insert(1, "" + m.Lan[0]);
@@ -663,19 +659,14 @@ namespace DemoSite.Models
     }
     public class Move
     {
-        private const string pieceCodes = ".prnbqkprnbqk";
+        private const string PieceCodes = ".prnbqkprnbqk";
         public int FromSquare { get; set; }
         public int ToSquare { get; set; }
         public int PromoteTo { get; set; }
-        public string Lan
-        {
-            get { return SquareIndexToAlgebraicNotation(FromSquare) + SquareIndexToAlgebraicNotation(ToSquare) + (IsPromoting ? "" + pieceCodes[PromoteTo] : ""); }
-        }
+        public string Lan => SquareIndexToAlgebraicNotation(FromSquare) + SquareIndexToAlgebraicNotation(ToSquare) + (IsPromoting ? "" + PieceCodes[PromoteTo] : "");
         public string San { get; set; }
-        public bool IsPromoting
-        {
-            get { return PromoteTo != 0; }
-        }
+        public bool IsPromoting => PromoteTo != 0;
+
         public Move(int src, int dst)
         {
             FromSquare = src;

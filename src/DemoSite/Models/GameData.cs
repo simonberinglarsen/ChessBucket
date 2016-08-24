@@ -10,7 +10,8 @@ namespace DemoSite.Models
         public int Id { get; set; }
         public string[] MovesLan { get; set; }
         public string[] MovesSan { get; set; }
-        public bool Analyzed { get; set; }
+        public AnalysisState AnalysisState { get; set; }
+        public string AnalysisInfo { get; set; }
         public AnalyzedMove[] AnalyzedMoves { get; set; }
 
         //The name of the tournament or match event.
@@ -27,5 +28,12 @@ namespace DemoSite.Models
         public string Black { get; set; }
         //The result of the game.This can only have four possible values: "1-0" (White won), "0-1" (Black won), "1/2-1/2" (Draw), or "*" (other, e.g., the game is ongoing).
         public string Result { get; set; }
+    }
+
+    public enum AnalysisState
+    {
+        Pending,
+        Started,
+        Done,
     }
 }

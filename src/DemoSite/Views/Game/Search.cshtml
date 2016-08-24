@@ -32,7 +32,9 @@
             <a class="list-group-item list-group-item-action" ng-repeat="result in viewmodel.SearchResults track by $index" ng-click="selectGame(result.GameId)">
                 <h5 class="list-group-item-heading"><strong><span class="label label-default">{{result.Date}}</span> {{result.Event}} ({{result.Site}}) - Round {{result.Round}}</strong></h5>
                 <p class="list-group-item-text">
-                    {{result.White}} vs. {{result.Black}} ({{result.Result}})
+                    {{result.White}} vs. {{result.Black}} ({{result.Result}})<br/>
+                    {{result.AnalysisState == "Done" ? "Analyzed" : result.AnalysisState == "Started" ? "Started" : "Pending"}}
+
                 </p>
             </a>
             <a class="list-group-item list-group-item-action" ng-show="viewmodel.SearchResults.length == 0">

@@ -16,7 +16,7 @@ namespace DemoSite.Controllers
     public class GameController : Controller
     {
         private const int PageSize = 10;
-        private const int analysisDepth = 5;
+        private const int analysisDepth = 20;
         public IActionResult Index()
         {
             return RedirectToAction("Search");
@@ -54,7 +54,7 @@ namespace DemoSite.Controllers
                 {
                     // store game in database
                     GameData gd = new GameData();
-                    gd.Analyzed = false;
+                    gd.AnalysisState = AnalysisState.Pending;
                     if (MockedDatabase.Instance.Games.Count() == 0)
                         gd.Id = 1;
                     else
@@ -149,11 +149,13 @@ namespace DemoSite.Controllers
         public void AnalyzeGame()
         {
             MockedDatabase.Instance.Load();
-            GameData gd = MockedDatabase.Instance.Games.FirstOrDefault(g => !g.Analyzed);
+            GameData gd = MockedDatabase.Instance.Games.FirstOrDefault(g => g.AnalysisState == AnalysisState.Pending);
             if (gd == null) return;
+            gd.AnalysisState = AnalysisState.Started;
+            MockedDatabase.Instance.Save();
 
             gd.AnalyzedMoves = Analyze.Game(gd.MovesLan, analysisDepth);
-            gd.Analyzed = true;
+            gd.AnalysisState = AnalysisState.Done;
             MockedDatabase.Instance.Save();
         }
 
@@ -163,11 +165,13 @@ namespace DemoSite.Controllers
             while (true)
             {
                 MockedDatabase.Instance.Load();
-                GameData gd = MockedDatabase.Instance.Games.FirstOrDefault(g => !g.Analyzed);
+                GameData gd = MockedDatabase.Instance.Games.FirstOrDefault(g => g.AnalysisState == AnalysisState.Pending);
                 if (gd == null) return;
+                gd.AnalysisState = AnalysisState.Started;
+                MockedDatabase.Instance.Save();
 
                 gd.AnalyzedMoves = Analyze.Game(gd.MovesLan, analysisDepth);
-                gd.Analyzed = true;
+                gd.AnalysisState = AnalysisState.Done;
                 MockedDatabase.Instance.Save();
             }
         }
@@ -197,6 +201,7 @@ namespace DemoSite.Controllers
                     White = game.White,
                     Black = game.Black,
                     Result = game.Result,
+                    AnalysisState = game.AnalysisState.ToString()
                 });
             }
             return JsonConvert.SerializeObject(vm);

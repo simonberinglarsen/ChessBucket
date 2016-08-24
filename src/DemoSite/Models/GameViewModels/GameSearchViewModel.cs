@@ -22,5 +22,6 @@ namespace DemoSite.Models.GameViewModels
         public string Round { get; set; }
         public string Site { get; set; }
         public string White { get; set; }
+        public string AnalysisState { get; set; }
     }
 }
