@@ -116,6 +116,3 @@ a:active, a:hover, a:visited {
     overflow: auto;
 }
 
-.table-striped2 > tbody > tr:nth-of-type(odd) {
-  background-color: #ddd;
-}

@@ -36,8 +36,8 @@ namespace DemoSite.Models
                     string logLine = $"Analyze.Game {((i+1)/(double) moveList.Length).ToString("0.##%")}";
                     System.Diagnostics.Debug.WriteLine(logLine);
                     _job.Ping(logLine);
-                    if(!_job.IsProcessing)
-                        throw new Exception("job was cancelled (by changing qstate)");
+                    if (_job.QState == QState.Cancel)
+                        throw new CancelJobException("job was cancelled (by changing qstate)");
                     string moveText = moveList[i];
                     Move gameMove = Move.FromLan(moveText);
                     AnalyzedMove analyzedMove = new AnalyzedMove();
@@ -108,9 +108,7 @@ namespace DemoSite.Models
                 }
             }
         }
-
-
-
+        
         public static int MaterialScore(Board b)
         {
 
@@ -129,6 +127,14 @@ namespace DemoSite.Models
                     totalScore += pieceCount[i] * scores[i];
                 return totalScore;
             }
+        }
+    }
+
+    public class CancelJobException : Exception
+    {
+        public CancelJobException(string message) : base(message)
+        {
+            
         }
     }
 }

@@ -123,7 +123,17 @@ namespace DemoSite.Models
                 b.PopulateSan(moves);
                 try
                 {
-                    var r = moves.Single(x => x.San == elements[i].Replace("+", "").Replace("#", ""));
+                    var r = moves.SingleOrDefault(x => x.San == elements[i].Replace("+", "").Replace("#", ""));
+                    if (r == null)
+                    {
+                        // if you type nge2 even though only 1 knight can go to e2 it will be accepted as a move 
+                        // (by removing the g and then finding the san)
+                        if (elements[i].Length == 4 && ("RNBQ".IndexOf(elements[i][0])) > 0)
+                        {
+                            string adjustedmove = elements[i][0] + elements[i].Substring(2);
+                            r = moves.SingleOrDefault(x => x.San == adjustedmove);
+                        }
+                    }
                     lan.Add(r.Lan);
                     san.Add(r.San);
                     b.DoMove(r);

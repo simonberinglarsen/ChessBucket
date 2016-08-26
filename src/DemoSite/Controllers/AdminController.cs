@@ -46,10 +46,8 @@ namespace DemoSite.Controllers
         {
             var t = new Task(() =>
             {
-                using (QueueProcessor p = new QueueProcessor())
-                {
-                    p.Run();
-                }
+                QueueProcessor p = new QueueProcessor();
+                p.Run();
             });
             t.Start();
         }

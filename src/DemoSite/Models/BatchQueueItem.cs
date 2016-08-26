@@ -20,10 +20,12 @@ namespace DemoSite.Models
 
     public enum QState : int
     {
-        Pending,
-        Processing,
-        Done,
-        Error
+        Pending = 0,
+        Processing = 1,
+        Done = 2,
+        Error = 3,
+        Cancel = 4,
+        ForceProcessing = 5,
     }
 
     public enum QType : int
