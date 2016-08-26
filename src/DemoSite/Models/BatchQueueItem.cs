@@ -15,6 +15,7 @@ namespace DemoSite.Models
         public DateTime ModifiedAt { get; set; }
         public DateTime? ProcessingAt { get; set; }
         public string Error { get; set; }
+        public string Info { get; internal set; }
     }
 
     public enum QState : int

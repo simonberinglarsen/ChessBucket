@@ -1,0 +1,51 @@
+﻿@model QueueViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+<div ng-app="adminQueueApp" ng-controller="adminQueueCtrl">
+    <div class="page-header">
+        <h1>
+            Queue
+        </h1>
+    </div>
+
+    <table class="table-condensed table-striped2">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Type</th>
+                <th>State</th>
+                <th>Ref#</th>
+                <th>...</th>
+                <th>Info</th>
+                <th>Error</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="item in viewmodel.QueueItems track by $index">
+                <td>{{item.Id}}</td>
+                <td>{{item.QType}}</td>
+                <td>{{item.QState}}</td>
+                <td>"{{item.Reference}}"</td>
+                <td>
+                    <div ng-show="{{item.CreatedAtDate}}"><span class="label label-warning">{{item.CreatedAtDate}}</span> created<br /></div>
+                    <div ng-show="{{item.ProcessingAtDate}}"><span class="label label-default">{{item.ProcessingAtDate}}</span> processing<br /></div>
+                    <div ng-show="{{item.ModifiedAtDate}}"><span class="label label-default">{{item.ModifiedAtDate}}</span> modified<br /></div>
+                </td>
+                <td>
+                    <pre ng-show="{{item.Info}}">{{item.Info}}</pre>
+                </td>
+                <td>
+                    <pre ng-show="{{item.Error}}">{{item.Error}}</pre>
+                </td>
+
+            </tr>
+        </tbody>
+
+    </table>
+
+</div>
+
+@section Scripts {
+    <script src="~/js/adminQueueApp.js"></script>
+}

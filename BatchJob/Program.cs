@@ -13,7 +13,7 @@ namespace BatchJob
         static void Main(string[] args)
 
         {
-            string url = @"http://localhost:5000/game/TriggerQProcessor";
+            string url = @"http://localhost:5000/Admin/TriggerQProcessor";
             WebClient c = new WebClient();
             while (true)
             {

@@ -7,7 +7,7 @@ using DemoSite.Models;
 using System.Text;
 using System.IO;
 
-namespace ConsoleApp1
+namespace DemoSite.Models
 {
     public class SFProxy : IDisposable
     {

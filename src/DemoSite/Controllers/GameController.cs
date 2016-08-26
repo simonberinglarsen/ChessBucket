@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using ConsoleApp1;
 using DemoSite.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -17,9 +16,8 @@ namespace DemoSite.Controllers
 {
     public class GameController : Controller
     {
-        private ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
         private const int PageSize = 10;
-        private const int analysisDepth = 20;
 
         public GameController(ApplicationDbContext context)
         {
@@ -164,16 +162,7 @@ namespace DemoSite.Controllers
             return JsonConvert.SerializeObject(vm);
         }
 
-        [HttpGet]
-        public void TriggerQProcessor()
-        {
-            var t = new Task(() =>
-            {
-                QueueProcessor p = new QueueProcessor();
-                p.Run();
-            });
-            t.Start();
-        }
+      
 
         public string SearchGames(string searchText, int page)
         {

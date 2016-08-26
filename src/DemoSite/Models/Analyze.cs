@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using ConsoleApp1;
 using Microsoft.AspNetCore.Razor.Tools.Internal;
 
 namespace DemoSite.Models
@@ -12,10 +11,12 @@ namespace DemoSite.Models
     public class Analyze
     {
         public int _depth;
+        public IJob _job;
         private const string Engine = "Stockfish";
-        public Analyze(int depth)
+        public Analyze(int depth, IJob job)
         {
             _depth = depth;
+            _job = job;
         }
 
         public string Info => $"Engine: {Engine}, Depth:{_depth}";
@@ -32,7 +33,11 @@ namespace DemoSite.Models
                 StringBuilder moveSequence = new StringBuilder();
                 for (int i = 0; i < moveList.Length; i++)
                 {
-                    System.Diagnostics.Debug.WriteLine($"Analyze.Game {i * 100 / (double)moveList.Length}%");
+                    string logLine = $"Analyze.Game {((i+1)/(double) moveList.Length).ToString("0.##%")}";
+                    System.Diagnostics.Debug.WriteLine(logLine);
+                    _job.Ping(logLine);
+                    if(!_job.IsProcessing)
+                        throw new Exception("job was cancelled (by changing qstate)");
                     string moveText = moveList[i];
                     Move gameMove = Move.FromLan(moveText);
                     AnalyzedMove analyzedMove = new AnalyzedMove();
