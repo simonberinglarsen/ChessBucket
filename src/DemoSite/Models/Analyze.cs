@@ -11,7 +11,16 @@ namespace DemoSite.Models
 {
     public class Analyze
     {
-        public static AnalyzedMove[] Game(string[] moveList, int depth)
+        public int _depth;
+        private const string Engine = "Stockfish";
+        public Analyze(int depth)
+        {
+            _depth = depth;
+        }
+
+        public string Info => $"Engine: {Engine}, Depth:{_depth}";
+
+        public AnalyzedMove[] Game(string[] moveList)
         {
             System.Diagnostics.Debug.WriteLine("Analyze.Game");
             string beforeFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -21,8 +30,10 @@ namespace DemoSite.Models
                 b.StartPosition();
                 List<AnalyzedMove> analyzedMoves = new List<AnalyzedMove>();
                 StringBuilder moveSequence = new StringBuilder();
-                foreach (var moveText in moveList)
+                for (int i = 0; i < moveList.Length; i++)
                 {
+                    System.Diagnostics.Debug.WriteLine($"Analyze.Game {i * 100 / (double)moveList.Length}%");
+                    string moveText = moveList[i];
                     Move gameMove = Move.FromLan(moveText);
                     AnalyzedMove analyzedMove = new AnalyzedMove();
                     analyzedMove.IsWhite = b.WhitesTurn;
@@ -33,9 +44,9 @@ namespace DemoSite.Models
                         throw new Exception("last move failed! - >" + moveSequence.ToString());
                     }
                     // array of actual- and bestmove
-                    analyzedMove.BestMove = proxy.Go(moveSequence, depth);
-                    if(analyzedMove.BestMove.MoveLan != moveText)
-                        analyzedMove.ActualMove = proxy.Go(moveSequence, depth, moveText);
+                    analyzedMove.BestMove = proxy.Go(moveSequence, _depth);
+                    if (analyzedMove.BestMove.MoveLan != moveText)
+                        analyzedMove.ActualMove = proxy.Go(moveSequence, _depth, moveText);
 
                     b.DoMove(gameMove);
                     analyzedMoves.Add(analyzedMove);
@@ -65,7 +76,7 @@ namespace DemoSite.Models
             for (int i = 1; i < analyzedMoves.Count(); i++)
             {
                 var cur = analyzedMoves[i].ActualMove ?? analyzedMoves[i].BestMove;
-                var prev = analyzedMoves[i-1].ActualMove ?? analyzedMoves[i-1].BestMove;
+                var prev = analyzedMoves[i - 1].ActualMove ?? analyzedMoves[i - 1].BestMove;
                 var dPrev = prev.DeltaToBest;
                 var dCur = cur.DeltaToBest;
                 bool blunderPrev = dPrev < -100;
@@ -92,7 +103,7 @@ namespace DemoSite.Models
                 }
             }
         }
-        
+
 
 
         public static int MaterialScore(Board b)

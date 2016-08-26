@@ -8,9 +8,7 @@
         </h1>
     </div>
     <div class="input-group">
-        <span class="input-group-btn" style="width: 0;">
-            <button onclick="location.href='@Url.Action("Upload")'" class="btn btn-success"> <strong>+</strong></button>
-        </span>
+    
         <input type="text" class="form-control" placeholder="Search text" style="width: 400px" ng-model="searchText" />
         <div class="input-group-btn" style="width: 0;">
             <button ng-click="search()" class="btn btn-default">Go!</button>
@@ -30,15 +28,15 @@
     <div class="list-group">
         <div ng-show="!isLoading">
             <a class="list-group-item list-group-item-action" ng-repeat="result in viewmodel.SearchResults track by $index" ng-click="selectGame(result.GameId)">
-                <h5 class="list-group-item-heading"><strong><span class="label label-default">{{result.Date}}</span> {{result.Event}} ({{result.Site}}) - Round {{result.Round}}</strong></h5>
+                <h4 class="list-group-item-heading"><strong>{{result.White}} vs. {{result.Black}}</strong> {{result.Result}}</h4>
                 <p class="list-group-item-text">
-                    {{result.White}} vs. {{result.Black}} ({{result.Result}})<br/>
-                    {{result.AnalysisState == "Done" ? "Analyzed" : result.AnalysisState == "Started" ? "Started" : "Pending"}}
-
+                    <strong>{{result.Date}}</strong> {{result.Event}} ({{result.Site}}) - Round {{result.Round}}
+                    <br/>
+                    <span ng-class="{'label label-success' : result.AnalysisState == 'Done', 'label label-warning' : result.AnalysisState != 'Done'} " >{{result.AnalysisState == "Done" ? "Analyzed" : "Analysis Pending"}}</span>
                 </p>
             </a>
             <a class="list-group-item list-group-item-action" ng-show="viewmodel.SearchResults.length == 0">
-                <h5 class="list-group-item-heading">No results</h5>
+                <h4 class="list-group-item-heading">No results</h4>
             </a>
         </div>
     </div>

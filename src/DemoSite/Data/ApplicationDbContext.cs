@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using DemoSite.Models;
 
 namespace DemoSite.Data
@@ -22,5 +21,34 @@ namespace DemoSite.Data
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
         }
+
+        public DbSet<GameCompressed> Games { get; set; }
+        public DbSet<BatchQueueItem> BatchQueue { get; set; }
     }
+
+    public class DatabaseSeeder
+    {
+        public static void Initialize(IServiceProvider serviceProvider)
+        {
+            var context = serviceProvider.GetService<ApplicationDbContext>();
+            context.Database.Migrate();
+            string[] roles = new string[] { "Parent", "Child" };
+
+            foreach (string role in roles)
+            {
+                var roleStore = new RoleStore<IdentityRole>(context);
+
+                if (!context.Roles.Any(r => r.Name == role))
+                {
+                    var result = roleStore.CreateAsync(new IdentityRole() { Name = role, NormalizedName = role.ToUpper() }).Result;
+                }
+            }
+            context.SaveChanges();
+        }
+
+
+    }
+
 }
+
+

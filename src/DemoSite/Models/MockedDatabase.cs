@@ -7,15 +7,15 @@ using System.IO;
 
 namespace DemoSite.Models
 {
-    public class MockedDatabase
+    public class MockedDatabase2
     {
 
-        private static MockedDatabase instance = new MockedDatabase();
-        private MockedDatabase()
+        private static MockedDatabase2 instance = new MockedDatabase2();
+        private MockedDatabase2()
         {
         }
 
-        public static MockedDatabase Instance
+        public static MockedDatabase2 Instance
         {
             get
             {
@@ -26,7 +26,7 @@ namespace DemoSite.Models
 
         public void Load()
         {
-            MockedDatabase x = JsonConvert.DeserializeObject<MockedDatabase>(File.ReadAllText("jsonblob.txt"));
+            MockedDatabase2 x = JsonConvert.DeserializeObject<MockedDatabase2>(File.ReadAllText("jsonblob.txt"));
             Games = x.Games;
 
         }
@@ -37,7 +37,7 @@ namespace DemoSite.Models
             File.WriteAllText("jsonblob.txt", x);
         }
 
-        public List<GameData> Games { get; set; }
+        public List<Game> Games { get; set; }
     }
 
   

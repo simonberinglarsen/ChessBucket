@@ -5,7 +5,13 @@
 
 <div ng-app="gameShowApp" ng-controller="gameShowCtrl">
     <div class="page-header">
-        <h1>Games</h1>
+        <h1 class="list-group-item-heading"><strong>{{viewmodel.White}} vs. {{viewmodel.Black}}</strong> {{viewmodel.Result}}
+        </h1>
+        <p class="list-group-item-text">
+            <strong>{{viewmodel.Date}}</strong> {{viewmodel.Event}} ({{viewmodel.Site}}) - Round {{viewmodel.Round}}
+            <br />
+            <span ng-class="{'label label-success' : viewmodel.AnalysisState == 'Done', 'label label-warning' : viewmodel.AnalysisState != 'Done'} ">{{viewmodel.AnalysisState == "Done" ? "Analyzed" : "Analysis Pending"}}</span>
+        </p>
     </div>
     <div class="row">
         <div class="col-sm-6" style="height: 500px; width: 400px">
@@ -38,6 +44,9 @@
                                 black {{-positionValue/100}} pawns
                             </div>
                         </div>
+                        <p>
+                            {{viewmodel.AnalysisInfo}}
+                        </p>
                         <p>
                             <div class="btn btn-default" ng-click="prevVariationMove()"><span class="glyphicon glyphicon-chevron-left"></span>prev</div>
                             <div class="btn btn-default" ng-click="nextVariationMove()">next<span class="glyphicon glyphicon-chevron-right"></span></div>

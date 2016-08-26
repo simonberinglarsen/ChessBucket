@@ -457,12 +457,26 @@ namespace DemoSite.Models
                 WhiteCanCastleLong = false;
                 WhiteCanCastleShort = false;
             }
-            bool leftRookMove = _board[move.ToSquare] == 2 && move.FromSquare == 0;
-            if (leftRookMove && _isInverted) WhiteCanCastleShort = false;
-            if (leftRookMove && !_isInverted) WhiteCanCastleLong = false;
-            bool rightRookMove = _board[move.ToSquare] == 2 && move.FromSquare == 7;
-            if (rightRookMove && _isInverted) WhiteCanCastleLong = false;
-            if (rightRookMove && !_isInverted) WhiteCanCastleShort = false;
+            if (_isInverted)
+            {
+                if (_board[0] != 2) WhiteCanCastleShort = false;
+                if (_board[7] != 2) WhiteCanCastleLong = false;
+                if (_board[56] != 8) BlackCanCastleShort = false;
+                if (_board[63] != 8) BlackCanCastleLong= false;
+            }
+            else
+            {
+                if (_board[0] != 2) WhiteCanCastleLong = false;
+                if (_board[7] != 2) WhiteCanCastleShort = false;
+                if (_board[56] != 8) BlackCanCastleLong = false;
+                if (_board[63] != 8) BlackCanCastleShort= false;
+            }
+            bool leftRookMoved = _board[0] != 2;
+            if (leftRookMoved && _isInverted) WhiteCanCastleShort = false;
+            if (leftRookMoved && !_isInverted) WhiteCanCastleLong = false;
+            bool rightRookMoved = _board[7] != 2;
+            if (rightRookMoved && _isInverted) WhiteCanCastleLong = false;
+            if (rightRookMoved && !_isInverted) WhiteCanCastleShort = false;
 
             // enpassant
             bool enpassantCapture = (move.ToSquare - move.FromSquare) % 8 != 0 && undo.OriginalPieceOnToSquare == 0 && undo.OriginalPieceOnFromSquare == 1;
@@ -655,7 +669,23 @@ namespace DemoSite.Models
             }
 
         }
-        
+
+        public string ToSan(string moveLan)
+        {
+            var moves = GenerateMoves();
+            PopulateSan(moves);
+            string san;
+            try
+            {
+                san = moves.Single(x => x.Lan == moveLan).San;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
+                throw;
+            }
+            return san;
+        }
     }
     public class Move
     {

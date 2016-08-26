@@ -35,10 +35,12 @@ namespace DemoSite
         }
 
         public IConfigurationRoot Configuration { get; }
+        public static string ConnectionString { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            ConnectionString = Configuration.GetConnectionString("DefaultConnection");
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -76,6 +78,7 @@ namespace DemoSite
             app.UseIdentity();
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
+            DatabaseSeeder.Initialize(app.ApplicationServices);
 
             app.UseMvc(routes =>
             {
@@ -85,4 +88,6 @@ namespace DemoSite
             });
         }
     }
+
+    
 }

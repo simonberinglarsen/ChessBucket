@@ -76,13 +76,11 @@ namespace ConsoleApp1
                         evalMove.MoveLan = (pv+" ").Substring(0, 5).Trim();
                         Board b = new Board();
                         b.Setup(beforeFen);
-                        var m = b.GenerateMoves();
-                        b.PopulateSan(m);
                         if (info.ContainsKey("score_mate"))
                             evalMove.Value = info["score_mate"] < 0 ? - 30000 : 30000;
                         else
                             evalMove.Value = info["score_cp"];
-                        evalMove.MoveSan = m.Single(x => x.Lan == evalMove.MoveLan).San;
+                        evalMove.MoveSan = b.ToSan(evalMove.MoveLan);
                         evalMove.DeltaToBest = 0;
                         if (string.IsNullOrWhiteSpace(specificMove))
                         {
@@ -93,12 +91,12 @@ namespace ConsoleApp1
                             foreach (var move in qqq)
                             {
                                 ff += " " + move;
-                                var xx = b.GenerateMoves();
-                                b.PopulateSan(xx);
-                                EvaluatedMove ee = new EvaluatedMove();
-                                ee.Value = evalMove.Value;
-                                ee.MoveLan = move;
-                                ee.MoveSan = xx.Single(x => x.Lan == move).San;
+                                EvaluatedMove ee = new EvaluatedMove
+                                {
+                                    Value = evalMove.Value,
+                                    MoveLan = move,
+                                    MoveSan = b.ToSan(move)
+                                };
                                 qq.Add(ee);
                                 b.DoMove(Move.FromLan(move));
                             }
