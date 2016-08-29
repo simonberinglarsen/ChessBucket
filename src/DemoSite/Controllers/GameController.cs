@@ -68,6 +68,7 @@ namespace DemoSite.Controllers
                     gd.Black = game.Headers.ContainsKey("BLACK") ? game.Headers["BLACK"] : null;
                     gd.WhiteElo = game.Headers.ContainsKey("WHITEELO") ? game.Headers["WHITEELO"] : null;
                     gd.BlackElo = game.Headers.ContainsKey("BLACKELO") ? game.Headers["BLACKELO"] : null;
+                    gd.EventCountry = game.Headers.ContainsKey("EVENTCOUNTRY") ? game.Headers["EVENTCOUNTRY"] : null;
                     gd.Result = game.Headers.ContainsKey("RESULT") ? game.Headers["RESULT"] : null;
                     if (gd.Event == null)
                         gameErrors.AppendLine("event header missing (event)");
@@ -87,6 +88,8 @@ namespace DemoSite.Controllers
                         gameErrors.AppendLine("black header missing (blackelo)");
                     if (gd.Result == null)
                         gameErrors.AppendLine("result header missing (result)");
+                    if (gd.EventCountry == null)
+                        gameErrors.AppendLine("result header missing (EventCountry)");
                     if (gameErrors.Length > 0)
                     {
                         allErrors.AppendLine(gameErrors.ToString());
@@ -195,6 +198,7 @@ namespace DemoSite.Controllers
                     Black = game.Black,
                     WhiteElo = game.WhiteElo,
                     BlackElo = game.BlackElo,
+                    EventCountry = game.EventCountry,
                     Result = game.Result,
                     AnalysisState = game.AnalysisState.ToString()
                 });

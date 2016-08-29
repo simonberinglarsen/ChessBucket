@@ -51,6 +51,7 @@ namespace DemoSite.Models
                 Black = input.Black,
                 WhiteElo = input.WhiteElo,
                 BlackElo = input.BlackElo,
+                EventCountry = input.EventCountry,
                 Result = input.Result,
                 CompressedData = compressedData
             };
@@ -87,6 +88,7 @@ namespace DemoSite.Models
                 Black = input.Black,
                 WhiteElo = input.WhiteElo,
                 BlackElo = input.BlackElo,
+                EventCountry = input.EventCountry,
                 Result = input.Result,
                 MovesSan = decompressedObject.MovesSan,
                 MovesLan = decompressedObject.MovesLan,

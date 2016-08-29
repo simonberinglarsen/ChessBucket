@@ -20,8 +20,11 @@ namespace DemoSite.Models.GameViewModels
             this.Black = gd.Black;
             this.WhiteElo = gd.WhiteElo;
             this.BlackElo = gd.BlackElo;
+            this.EventCountry = gd.EventCountry;
             this.Result = gd.Result;
         }
+
+        public string EventCountry { get; set; }
 
         public string BlackElo { get; set; }
 

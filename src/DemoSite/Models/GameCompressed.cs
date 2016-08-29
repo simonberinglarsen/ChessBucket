@@ -32,5 +32,6 @@ namespace DemoSite.Models
         public byte[] CompressedData { get; set; }
         public string WhiteElo { get; set; }
         public string BlackElo { get; set; }
+        public string EventCountry { get; set; }
     }
 }

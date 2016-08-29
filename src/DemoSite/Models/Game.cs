@@ -33,6 +33,7 @@ namespace DemoSite.Models
         public AnalyzedMove[] AnalyzedMoves { get; set; }
         public string WhiteElo { get; set; }
         public string BlackElo { get; set; }
+        public string EventCountry { get; set; }
     }
 
     public enum AnalysisState
