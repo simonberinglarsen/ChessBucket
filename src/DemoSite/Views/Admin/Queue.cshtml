@@ -13,9 +13,7 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Type</th>
-                <th>State</th>
-                <th>Ref#</th>
+                <th>Data</th>
                 <th>...</th>
                 <th>Info</th>
                 <th>Error</th>
@@ -25,13 +23,15 @@
         <tbody>
             <tr ng-repeat="item in viewmodel.QueueItems track by $index">
                 <td>{{item.Id}}</td>
-                <td>{{item.QType}}</td>
-                <td>{{item.QState}}</td>
-                <td>"{{item.Reference}}"</td>
                 <td>
-                    <div ng-show="{{item.CreatedAtDate}}"><span class="label label-primary">{{item.CreatedAtDate}}</span> created<br /></div>
-                    <div ng-show="{{item.ProcessingAtDate}}"><span class="label label-primary">{{item.ProcessingAtDate}}</span> processing<br /></div>
-                    <div ng-show="{{item.ModifiedAtDate}}"><span class="label label-primary">{{item.ModifiedAtDate}}</span> modified<br /></div>
+                    <div><span class="label label-default">{{item.QType}}</span> type<br /></div>
+                    <div><span class="label label-default">{{item.QState}}</span> state<br /></div>
+                    <div><span class="label label-primary">{{item.Reference}}</span> ref<br /></div>
+                </td>
+                <td>
+                    <div ng-show="{{item.CreatedAtDate}}"><span class="label label-default">{{item.CreatedAtDate}}</span> created<br /></div>
+                    <div ng-show="{{item.ProcessingAtDate}}"><span class="label label-default">{{item.ProcessingAtDate}}</span> processing<br /></div>
+                    <div ng-show="{{item.ModifiedAtDate}}"><span class="label label-default">{{item.ModifiedAtDate}}</span> modified<br /></div>
                 </td>
                 <td>
                     <pre ng-show="{{item.Info}}">{{item.Info}}</pre>

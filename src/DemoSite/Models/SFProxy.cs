@@ -152,5 +152,24 @@ namespace DemoSite.Models
             }
             _disposed = true;
         }
+
+        public string GetInfo()
+        {
+            _proc.StandardInput.WriteLine("uci");
+            StringBuilder result = new StringBuilder();
+            while (!_proc.StandardOutput.EndOfStream)
+            {
+                string line = ReadLine(_proc);
+                if (line.IndexOf("id name ") == 0)
+                {
+                    result.Append(line.Substring(8));
+                }
+                else if (line.IndexOf("uciok") == 0)
+                {
+                    return result.ToString();
+                }
+            }
+            return "unknown_engine";
+        }
     }
 }

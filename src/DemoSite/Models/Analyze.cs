@@ -12,14 +12,14 @@ namespace DemoSite.Models
     {
         public int _depth;
         public IJob _job;
-        private const string Engine = "Stockfish";
         public Analyze(int depth, IJob job)
         {
             _depth = depth;
             _job = job;
         }
 
-        public string Info => $"Engine: {Engine}, Depth:{_depth}";
+        public string Info { get; set; }
+    
 
         public AnalyzedMove[] Game(string[] moveList)
         {
@@ -27,6 +27,7 @@ namespace DemoSite.Models
             string beforeFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
             using (var proxy = new SFProxy())
             {
+                Info = proxy.GetInfo();
                 Board b = new Board();
                 b.StartPosition();
                 List<AnalyzedMove> analyzedMoves = new List<AnalyzedMove>();

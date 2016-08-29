@@ -28,7 +28,9 @@
     <div class="list-group">
         <div ng-show="!isLoading">
             <a class="list-group-item list-group-item-action" ng-repeat="result in viewmodel.SearchResults track by $index" ng-click="selectGame(result.GameId)">
-                <h4 class="list-group-item-heading"><strong>{{result.White}} vs. {{result.Black}}</strong> {{result.Result}}</h4>
+                <h4 class="list-group-item-heading">
+                    <span class="flag-sm flag-sm-{{result.EventCountry}}"></span> <strong>{{result.White}} vs. {{result.Black}}</strong> {{result.Result}}
+                </h4>
                 <p class="list-group-item-text">
                     <strong>{{result.Date}}</strong> {{result.Event}} ({{result.Site}}) - Round {{result.Round}}
                     <br/>
