@@ -30,6 +30,7 @@ namespace DemoSite.Models
         //The result of the game.This can only have four possible values: "1-0" (White won), "0-1" (Black won), "1/2-1/2" (Draw), or "*" (other, e.g., the game is ongoing).
         public string Result { get; set; }
         public byte[] CompressedData { get; set; }
-       
+        public string WhiteElo { get; set; }
+        public string BlackElo { get; set; }
     }
 }

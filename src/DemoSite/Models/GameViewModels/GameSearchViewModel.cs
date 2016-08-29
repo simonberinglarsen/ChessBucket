@@ -23,5 +23,7 @@ namespace DemoSite.Models.GameViewModels
         public string Site { get; set; }
         public string White { get; set; }
         public string AnalysisState { get; set; }
+        public string WhiteElo { get; set; }
+        public string BlackElo { get; set; }
     }
 }

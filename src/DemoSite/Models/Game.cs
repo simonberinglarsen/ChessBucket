@@ -31,7 +31,8 @@ namespace DemoSite.Models
         public string[] MovesLan { get; set; }
         public string[] MovesSan { get; set; }
         public AnalyzedMove[] AnalyzedMoves { get; set; }
-        
+        public string WhiteElo { get; set; }
+        public string BlackElo { get; set; }
     }
 
     public enum AnalysisState

@@ -18,8 +18,14 @@ namespace DemoSite.Models.GameViewModels
             this.Round = gd.Round;
             this.White = gd.White;
             this.Black = gd.Black;
+            this.WhiteElo = gd.WhiteElo;
+            this.BlackElo = gd.BlackElo;
             this.Result = gd.Result;
         }
+
+        public string BlackElo { get; set; }
+
+        public string WhiteElo { get; set; }
 
         public string AnalysisState { get; set; }
         public string AnalysisInfo { get; set; }

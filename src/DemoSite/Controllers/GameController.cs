@@ -66,21 +66,27 @@ namespace DemoSite.Controllers
                     gd.Round = game.Headers.ContainsKey("ROUND") ? game.Headers["ROUND"] : null;
                     gd.White = game.Headers.ContainsKey("WHITE") ? game.Headers["WHITE"] : null;
                     gd.Black = game.Headers.ContainsKey("BLACK") ? game.Headers["BLACK"] : null;
+                    gd.WhiteElo = game.Headers.ContainsKey("WHITEELO") ? game.Headers["WHITEELO"] : null;
+                    gd.BlackElo = game.Headers.ContainsKey("BLACKELO") ? game.Headers["BLACKELO"] : null;
                     gd.Result = game.Headers.ContainsKey("RESULT") ? game.Headers["RESULT"] : null;
                     if (gd.Event == null)
-                        gameErrors.AppendLine("event header missing");
+                        gameErrors.AppendLine("event header missing (event)");
                     if (gd.Site == null)
-                        gameErrors.AppendLine("site header missing");
+                        gameErrors.AppendLine("site header missing (site)");
                     if (gd.Date == null)
-                        gameErrors.AppendLine("date header missing");
+                        gameErrors.AppendLine("date header missing (date)");
                     if (gd.Round == null)
-                        gameErrors.AppendLine("round header missing");
+                        gameErrors.AppendLine("round header missing (round)");
                     if (gd.White == null)
-                        gameErrors.AppendLine("white header missing");
+                        gameErrors.AppendLine("white header missing white)");
                     if (gd.Black == null)
-                        gameErrors.AppendLine("black header missing");
+                        gameErrors.AppendLine("black header missing (black)");
+                    if (gd.WhiteElo == null)
+                        gameErrors.AppendLine("white header missing (whiteelo)");
+                    if (gd.BlackElo == null)
+                        gameErrors.AppendLine("black header missing (blackelo)");
                     if (gd.Result == null)
-                        gameErrors.AppendLine("result header missing");
+                        gameErrors.AppendLine("result header missing (result)");
                     if (gameErrors.Length > 0)
                     {
                         allErrors.AppendLine(gameErrors.ToString());
@@ -187,6 +193,8 @@ namespace DemoSite.Controllers
                     Round = game.Round,
                     White = game.White,
                     Black = game.Black,
+                    WhiteElo = game.WhiteElo,
+                    BlackElo = game.BlackElo,
                     Result = game.Result,
                     AnalysisState = game.AnalysisState.ToString()
                 });

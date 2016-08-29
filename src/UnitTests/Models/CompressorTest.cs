@@ -29,6 +29,8 @@ namespace UnitTests.Models
             Assert.True(decompressed.Round == decompressed2.Round);
             Assert.True(decompressed.White == decompressed2.White);
             Assert.True(decompressed.Black == decompressed2.Black);
+            Assert.True(decompressed.WhiteElo == decompressed2.WhiteElo);
+            Assert.True(decompressed.BlackElo == decompressed2.BlackElo);
             Assert.True(decompressed.Result == decompressed2.Result);
             AssertHelper.True(decompressed.AnalyzedMoves, decompressed2.AnalyzedMoves);
             AssertHelper.True(decompressed.MovesLan, decompressed2.MovesLan);
@@ -119,6 +121,8 @@ namespace UnitTests.Models
             x.AnalysisInfo = RandomStuff.String();
             x.Black = RandomStuff.String();
             x.White = RandomStuff.String();
+            x.BlackElo = (1200 + 9*RandomStuff.Int()).ToString();
+            x.WhiteElo = (1200 + 9*RandomStuff.Int()).ToString();
             x.AnalyzedMoves = new[]
             {
                new AnalyzedMoveBuilder().Random().Build(),
