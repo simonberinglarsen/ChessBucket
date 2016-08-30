@@ -28,7 +28,7 @@ namespace ChessBucket.Models
         private ApplicationDbContext CreateContext()
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            optionsBuilder.UseSqlServer(Startup.ConnectionString);
+            optionsBuilder.UseNpgsql(Startup.ConnectionString);
             return new ApplicationDbContext(optionsBuilder.Options);
 
         }
@@ -100,7 +100,7 @@ namespace ChessBucket.Models
 
         private void AnalyzeGame(Game game)
         {
-            Analyze analyze = new Analyze(20, this);
+            Analyze analyze = new Analyze(17, this);
             var analysisResult = analyze.Game(game.MovesLan);
             game.AnalyzedMoves = analysisResult;
             game.AnalysisInfo = analyze.Info;

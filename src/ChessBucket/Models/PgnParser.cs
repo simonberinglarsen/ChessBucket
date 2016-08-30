@@ -23,7 +23,8 @@ namespace ChessBucket.Models
             NewGame,
             FindHeaderOrGame,
             ReadHeader,
-            ReadGame
+            ReadGame,
+            
         }
 
         private void Parse(string pgn)
@@ -79,8 +80,17 @@ namespace ChessBucket.Models
                         }
                         break;
                     case State.ReadGame:
-                        if (pgn[i] == '[' || i == pgn.Length - 1)
+                        if (pgn[i] == '{')
                         {
+                            // remove the '{' character
+                            buffer.Remove(buffer.Length - 1, 1);
+                            // fastforward to end of comment
+                            while (pgn[i] != '}') i++;
+                            break;
+                        }
+                        else if (pgn[i] == '[' || i == pgn.Length - 1)
+                        {
+                            // new header - endofgame
                             string moves = buffer.ToString();
                             var last = all.Last();
                             ParseMoves(last, moves);

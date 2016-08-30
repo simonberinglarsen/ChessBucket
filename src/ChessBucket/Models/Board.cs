@@ -429,7 +429,9 @@ namespace ChessBucket.Models
                 OriginalPieceOnFromSquare = _board[move.FromSquare],
                 OriginalPieceOnToSquare = _board[move.ToSquare],
                 WhiteCanCastleLong = WhiteCanCastleLong,
-                WhiteCanCastleShort = WhiteCanCastleShort
+                WhiteCanCastleShort = WhiteCanCastleShort,
+                BlackCanCastleLong = BlackCanCastleLong,
+                BlackCanCastleShort = BlackCanCastleShort
             };
             // do move
             if (move.IsPromoting)
@@ -471,12 +473,6 @@ namespace ChessBucket.Models
                 if (_board[56] != 8) BlackCanCastleLong = false;
                 if (_board[63] != 8) BlackCanCastleShort= false;
             }
-            bool leftRookMoved = _board[0] != 2;
-            if (leftRookMoved && _isInverted) WhiteCanCastleShort = false;
-            if (leftRookMoved && !_isInverted) WhiteCanCastleLong = false;
-            bool rightRookMoved = _board[7] != 2;
-            if (rightRookMoved && _isInverted) WhiteCanCastleLong = false;
-            if (rightRookMoved && !_isInverted) WhiteCanCastleShort = false;
 
             // enpassant
             bool enpassantCapture = (move.ToSquare - move.FromSquare) % 8 != 0 && undo.OriginalPieceOnToSquare == 0 && undo.OriginalPieceOnFromSquare == 1;
@@ -518,6 +514,8 @@ namespace ChessBucket.Models
             EnpassantSquare = undoMove.EnpassantSquare;
             WhiteCanCastleShort = undoMove.WhiteCanCastleShort;
             WhiteCanCastleLong = undoMove.WhiteCanCastleLong;
+            BlackCanCastleShort = undoMove.BlackCanCastleShort;
+            BlackCanCastleLong = undoMove.BlackCanCastleLong;
         }
         private bool IsLegalMove(Move move)
         {
@@ -737,5 +735,7 @@ namespace ChessBucket.Models
         public int OriginalPieceOnToSquare { get; set; }
         public bool WhiteCanCastleLong { get; set; }
         public bool WhiteCanCastleShort { get; set; }
+        public bool BlackCanCastleLong { get; set; }
+        public bool BlackCanCastleShort { get; set; }
     }
 }

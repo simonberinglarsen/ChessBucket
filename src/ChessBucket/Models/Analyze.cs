@@ -24,7 +24,6 @@ namespace ChessBucket.Models
         public AnalyzedMove[] Game(string[] moveList)
         {
             System.Diagnostics.Debug.WriteLine("Analyze.Game");
-            string beforeFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
             using (var proxy = new SFProxy())
             {
                 Info = proxy.GetInfo();
@@ -43,12 +42,7 @@ namespace ChessBucket.Models
                     Move gameMove = Move.FromLan(moveText);
                     AnalyzedMove analyzedMove = new AnalyzedMove();
                     analyzedMove.IsWhite = b.WhitesTurn;
-                    // sanity check ... to be removed
-                    string fen = proxy.FenAfterMoves(moveSequence.ToString());
-                    if (fen != beforeFen)
-                    {
-                        throw new Exception("last move failed! - >" + moveSequence.ToString());
-                    }
+                  
                     // array of actual- and bestmove
                     analyzedMove.BestMove = proxy.Go(moveSequence, _depth);
                     if (analyzedMove.BestMove.MoveLan != moveText)
@@ -57,7 +51,6 @@ namespace ChessBucket.Models
                     b.DoMove(gameMove);
                     analyzedMoves.Add(analyzedMove);
                     moveSequence.Append(" " + moveText);
-                    beforeFen = b.DumpFen();
                 }
 
                 // comment the game

@@ -51,6 +51,33 @@ Nd5 15. a3 Be7 16. Nc3 Be6 17. Re1 Bf6 18. Nge4 Nc7 19. Bxe6 Nxe6 20. d5 Bxc3
         }
 
         [Fact]
+        public void SampleGame_CastlingLong_IsAllowed()
+        {
+            string pgn = @"[Event ""FICS rated blitz game""]
+[Site ""FICS freechess.org""]
+[FICSGamesDBGameNo ""394926114""]
+[White ""sharepointme""]
+[Black ""Polymorphe""]
+[WhiteElo ""1704""]
+[BlackElo ""1689""]
+[WhiteRD ""na""]
+[BlackRD ""na""]
+[TimeControl ""180+0""]
+[Date ""2016.05.10""]
+[Time ""11:30:00""]
+[WhiteClock ""0:03:00.000""]
+[BlackClock ""0:03:00.000""]
+[ECO ""A40""]
+[PlyCount ""81""]
+[Result ""1-0""]
+
+1. d4 e6 2. Bf4 c5 3. Nf3 cxd4 4. e3 dxe3 5. Bxe3 Nc6 6. c3 Nf6 7. Be2 Qc7 8. O-O h5 9. Nbd2 Ng4 10. Nc4 b5 11. Ncd2 Bd6 12. h3 a6 13. Ne4 Bh2+ 14. Kh1 f5 15. Neg5 Nce5 16. Qd4 Nxf3 17. Bxf3 Bg1 18. g3 Bb7 19. Bxb7 Qxb7+ 20. Kxg1 Nxe3 21. fxe3 h4 22. Qxg7 O-O-O 23. Qd4 hxg3 24. Qc5+ Kb8 25. Nf7 Rxh3 26. e4 d6 27. Nxd6 Rxd6 28. Qxd6+ Ka8 29. Rad1 Rh1+ 30. Kxh1 Qxe4+ 31. Kg1 Qe3+ 32. Kg2 Qe2+ 33. Kxg3 Qg4+ 34. Kf2 Qh4+ 35. Ke3 Qe4+ 36. Kd2 Qd5+ 37. Qxd5+ exd5 38. Rxf5 Kb7 39. Rg1 Kc6 40. Rf6+ Kc5 41. Rg8 {Black forfeits on time} 1-0
+";
+            PgnParser parser = new PgnParser();
+            parser.LoadPgn(pgn);
+        }
+
+        [Fact]
         public void WierdCase_PlayingVariation_NoRulesBroken()
         {
             string[] expected = new string[]
@@ -92,6 +119,7 @@ Nd5 15. a3 Be7 16. Nc3 Be6 17. Re1 Bf6 18. Nge4 Nc7 19. Bxe6 Nxe6 20. d5 Bxc3
             TestGameResults[] expectedResults = JsonConvert.DeserializeObject<TestGameResults[]>(File.ReadAllText(jsonExpectedPath));
             for (int i=0; i< parser.PgnGames.Length; i++)
             {
+                output.WriteLine($"game: {i}");
                 var game = parser.PgnGames[i];
                 //var  x = Analyze.Game(game.MovesLan);
                 Board b = new Board();

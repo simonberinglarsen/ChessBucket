@@ -12,6 +12,7 @@ namespace ChessBucket.Models
     public class SFProxy : IDisposable
     {
         private const string SFPath = @"C:\Users\bc0618\Desktop\simon\chess\stockfish-7-win\Windows\stockfish 7 x64.exe";
+        //private const string SFPath = @"C:\Users\bc0618\Desktop\simon\chess\stockfish-7-win\Windows\Houdini_15a_x64.exe";
         private const string LogPath = @"C:\Users\bc0618\Desktop\simon\chess\stockfish-7-win\Windows\output.log";
         private readonly Process _proc;
         public SFProxy()

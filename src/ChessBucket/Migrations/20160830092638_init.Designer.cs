@@ -8,14 +8,13 @@ using ChessBucket.Data;
 namespace ChessBucket.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20160830081819_init")]
+    [Migration("20160830092638_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.0.0-rtm-21431")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "1.0.0-rtm-21431");
 
             modelBuilder.Entity("ChessBucket.Models.ApplicationUser", b =>
                 {
