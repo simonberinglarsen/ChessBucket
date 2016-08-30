@@ -99,7 +99,7 @@ namespace ChessBucket.Models
 
         }
 
-       
+
 
         private void ParseMoves(PgnGame pgnGame, string pgnMoves)
         {
@@ -138,12 +138,14 @@ namespace ChessBucket.Models
                     san.Add(r.San);
                     b.DoMove(r);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    throw new Exception("move not found");
+                    string playerColor = lan.Count % 2 == 0 ? "whites" : "blacks";
+                    int moveno = lan.Count / 2 + 1;
+                    throw new Exception($"{playerColor} move {moveno} is not legal. I received this move: " + elements[i] + "... maybe these headers will help you find the game: "+ pgnGame.HeaderString());
                 }
 
-                
+
             }
             pgnGame.MovesLan = lan.ToArray();
             pgnGame.MovesSan = san.ToArray();
@@ -155,5 +157,15 @@ namespace ChessBucket.Models
         public Dictionary<string, string> Headers = new Dictionary<string, string>();
         public string[] MovesLan { get; set; }
         public string[] MovesSan { get; set; }
+
+        public string HeaderString()
+        {
+            StringBuilder headerText = new StringBuilder();
+            foreach (var header in Headers)
+            {
+                headerText.Append($"[{header.Key} \"{header.Value}\"] ");
+            }
+            return headerText.ToString();
+        }
     }
 }

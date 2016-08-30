@@ -19,12 +19,10 @@ namespace ChessBucket.Models.GameViewModels
         public string Event { get; set; }
         public int GameId { get; set; }
         public string Result { get; set; }
-        public string Round { get; set; }
         public string Site { get; set; }
         public string White { get; set; }
         public string AnalysisState { get; set; }
         public string WhiteElo { get; set; }
         public string BlackElo { get; set; }
-        public string EventCountry { get; set; }
     }
 }

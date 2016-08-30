@@ -15,21 +15,14 @@ namespace ChessBucket.Models.GameViewModels
             this.Event = gd.Event;
             this.Site = gd.Site;
             this.Date = gd.Date;
-            this.Round = gd.Round;
             this.White = gd.White;
             this.Black = gd.Black;
             this.WhiteElo = gd.WhiteElo;
             this.BlackElo = gd.BlackElo;
-            this.EventCountry = gd.EventCountry;
             this.Result = gd.Result;
         }
-
-        public string EventCountry { get; set; }
-
         public string BlackElo { get; set; }
-
         public string WhiteElo { get; set; }
-
         public string AnalysisState { get; set; }
         public string AnalysisInfo { get; set; }
         //The name of the tournament or match event.
@@ -39,7 +32,6 @@ namespace ChessBucket.Models.GameViewModels
         //The starting date of the game, in YYYY.MM.DD form. "??" are used for unknown values.
         public string Date { get; set; }
         //The playing round ordinal of the game within the event.
-        public string Round { get; set; }
         //The player of the white pieces, in "last name, first name" format.
         public string White { get; set; }
         //The player of the black pieces, same format as White.

@@ -26,12 +26,10 @@ namespace UnitTests.Models
             Assert.True(decompressed.Event == decompressed2.Event);
             Assert.True(decompressed.Site == decompressed2.Site);
             Assert.True(decompressed.Date == decompressed2.Date);
-            Assert.True(decompressed.Round == decompressed2.Round);
             Assert.True(decompressed.White == decompressed2.White);
             Assert.True(decompressed.Black == decompressed2.Black);
             Assert.True(decompressed.WhiteElo == decompressed2.WhiteElo);
             Assert.True(decompressed.BlackElo == decompressed2.BlackElo);
-            Assert.True(decompressed.EventCountry  == decompressed2.EventCountry);
             Assert.True(decompressed.Result == decompressed2.Result);
             AssertHelper.True(decompressed.AnalyzedMoves, decompressed2.AnalyzedMoves);
             AssertHelper.True(decompressed.MovesLan, decompressed2.MovesLan);
@@ -117,14 +115,12 @@ namespace UnitTests.Models
                 RandomStuff.String(),
             };
             x.Result = RandomStuff.String();
-            x.Round = RandomStuff.String();
             x.Site = RandomStuff.String();
             x.AnalysisInfo = RandomStuff.String();
             x.Black = RandomStuff.String();
             x.White = RandomStuff.String();
             x.BlackElo = (1200 + 9*RandomStuff.Int()).ToString();
             x.WhiteElo = (1200 + 9 * RandomStuff.Int()).ToString();
-            x.EventCountry = RandomStuff.String();
             x.AnalyzedMoves = new[]
             {
                new AnalyzedMoveBuilder().Random().Build(),
