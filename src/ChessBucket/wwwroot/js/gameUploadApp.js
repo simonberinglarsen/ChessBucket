@@ -6,7 +6,7 @@
         $scope.uploadGame = function () {
             $scope.isLoading = true;
             $scope.uploadSuccess = false;
-            $http({ method: 'Get', url: '/Game/ParseGame', params: { 'pgnText': $scope.pgnText } })
+            $http({ method: 'Post', url: '/Game/ParseGame', params: { 'pgnText': $scope.pgnText } })
             .success(function (data) {
                 $scope.viewmodel = data;
                 $scope.isLoading = false;

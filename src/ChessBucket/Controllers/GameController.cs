@@ -43,7 +43,7 @@ namespace ChessBucket.Controllers
             return View(new ShowGameViewModel() { Id = id });
         }
 
-        [HttpGet]
+        [HttpPost]
         public string ParseGame(string pgnText)
         {
             StringBuilder allErrors = new StringBuilder();
