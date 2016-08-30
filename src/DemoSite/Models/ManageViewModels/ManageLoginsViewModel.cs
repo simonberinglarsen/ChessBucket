@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Identity;
 
-namespace DemoSite.Models.ManageViewModels
+namespace ChessBucket.Models.ManageViewModels
 {
     public class ManageLoginsViewModel
     {

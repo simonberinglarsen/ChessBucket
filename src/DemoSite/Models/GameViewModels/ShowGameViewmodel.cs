@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DemoSite.Models.GameViewModels
+namespace ChessBucket.Models.GameViewModels
 {
     public class ShowGameViewModel
     {

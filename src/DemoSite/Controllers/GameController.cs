@@ -4,15 +4,15 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using DemoSite.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using DemoSite.Models.GameViewModels;
 using System.Text;
-using DemoSite.Data;
+using ChessBucket.Data;
+using ChessBucket.Models;
+using ChessBucket.Models.GameViewModels;
 using Microsoft.EntityFrameworkCore;
 
-namespace DemoSite.Controllers
+namespace ChessBucket.Controllers
 {
     public class GameController : Controller
     {

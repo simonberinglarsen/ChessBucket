@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DemoSite.Models.ManageViewModels
+namespace ChessBucket.Models.ManageViewModels
 {
     public class ChangePasswordViewModel
     {

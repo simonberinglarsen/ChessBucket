@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Razor.Tools.Internal;
 
-namespace DemoSite.Models
+namespace ChessBucket.Models
 {
     public class Analyze
     {

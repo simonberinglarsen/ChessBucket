@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
+using ChessBucket.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using DemoSite.Models;
 
-namespace DemoSite.Data
+namespace ChessBucket.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {

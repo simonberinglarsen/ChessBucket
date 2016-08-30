@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ChessBucket.Models;
+using ChessBucket.Models.ManageViewModels;
+using ChessBucket.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using DemoSite.Models;
-using DemoSite.Models.ManageViewModels;
-using DemoSite.Services;
 
-namespace DemoSite.Controllers
+namespace ChessBucket.Controllers
 {
     [Authorize]
     public class ManageController : Controller

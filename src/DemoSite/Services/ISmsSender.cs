@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DemoSite.Services
+namespace ChessBucket.Services
 {
     public interface ISmsSender
     {

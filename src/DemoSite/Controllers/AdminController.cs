@@ -4,16 +4,16 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using DemoSite.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using DemoSite.Models.GameViewModels;
+using ChessBucket.Models.GameViewModels;
 using System.Text;
-using DemoSite.Data;
-using DemoSite.Models.AdminViewModels;
+using ChessBucket.Data;
+using ChessBucket.Models;
+using ChessBucket.Models.AdminViewModels;
 using Microsoft.EntityFrameworkCore;
 
-namespace DemoSite.Controllers
+namespace ChessBucket.Controllers
 {
     public class AdminController : Controller
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DemoSite.Models
+namespace ChessBucket.Models
 {
     public class AnalyzedMove
     {

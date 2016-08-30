@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 //0=. , 1=prnbqk, 7=prnbqk
-namespace DemoSite.Models
+namespace ChessBucket.Models
 {
     public class Board
     {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
 
-namespace DemoSite.Models
+namespace ChessBucket.Models
 {
     public class GameCompressed
     {

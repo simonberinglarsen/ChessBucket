@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using DemoSite.Models;
+using ChessBucket.Models;
 using System.Text;
 using System.IO;
 
-namespace DemoSite.Models
+namespace ChessBucket.Models
 {
     public class SFProxy : IDisposable
     {

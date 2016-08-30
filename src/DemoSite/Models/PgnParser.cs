@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DemoSite.Models;
+using ChessBucket.Models;
 using System.Text;
 
-namespace DemoSite.Models
+namespace ChessBucket.Models
 {
     public class PgnParser
     {

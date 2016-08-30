@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using ChessBucket.Models;
+using ChessBucket.Models.AccountViewModels;
+using ChessBucket.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using DemoSite.Models;
-using DemoSite.Models.AccountViewModels;
-using DemoSite.Services;
 
-namespace DemoSite.Controllers
+namespace ChessBucket.Controllers
 {
     [Authorize]
     public class AccountController : Controller

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace DemoSite.Models
+namespace ChessBucket.Models
 {
    
 

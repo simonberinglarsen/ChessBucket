@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO;
 
-namespace DemoSite.Models
+namespace ChessBucket.Models
 {
     public class MockedDatabase2
     {
