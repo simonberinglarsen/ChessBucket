@@ -44,11 +44,10 @@ namespace ChessBucket.Controllers
         }
 
         [HttpPost]
-        public string ParseGame(string pgnText)
+        public string Post([FromBody]PgnData data)
         {
+            string pgnText = data.pgnText;
             StringBuilder allErrors = new StringBuilder();
-            string currentGame = "";
-            int? newGameId = null;
             try
             {
                 // parse game
@@ -65,7 +64,7 @@ namespace ChessBucket.Controllers
 
                     foreach (var game in parser.PgnGames)
                     {
-                        currentGame = game.HeaderString() + "...";
+                        string currentGame = game.HeaderString() + "...";
                         StringBuilder gameErrors = new StringBuilder();
                         // store game in database
                         Game gd = new Game();
@@ -211,6 +210,10 @@ namespace ChessBucket.Controllers
                 });
             }
             return JsonConvert.SerializeObject(vm);
+        }
+        public class PgnData
+        {
+            public string pgnText { get; set; }
         }
 
     }
