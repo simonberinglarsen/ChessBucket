@@ -30,5 +30,19 @@ namespace ChessBucket.Models
         public byte[] CompressedData { get; set; }
         public string WhiteElo { get; set; }
         public string BlackElo { get; set; }
+        public ICollection<GameTag> Tags { get; set; }
+    }
+
+    public class GameTag
+    {
+        public int Id { get; set; }
+        public Tag Tag { get; set; }
+        public GameCompressed Game { get; set; }
+    }
+
+    public class Tag
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

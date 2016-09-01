@@ -77,6 +77,19 @@ namespace ChessBucket.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Tags",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGeneratedOnAdd", true),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tags", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {
@@ -146,6 +159,32 @@ namespace ChessBucket.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "GameTags",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGeneratedOnAdd", true),
+                    GameId = table.Column<int>(nullable: true),
+                    TagId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GameTags", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GameTags_Games_GameId",
+                        column: x => x.GameId,
+                        principalTable: "Games",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_GameTags_Tags_TagId",
+                        column: x => x.TagId,
+                        principalTable: "Tags",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -202,6 +241,16 @@ namespace ChessBucket.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_GameTags_GameId",
+                table: "GameTags",
+                column: "GameId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GameTags_TagId",
+                table: "GameTags",
+                column: "TagId");
+
+            migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
                 column: "NormalizedName");
@@ -238,7 +287,7 @@ namespace ChessBucket.Migrations
                 name: "BatchQueue");
 
             migrationBuilder.DropTable(
-                name: "Games");
+                name: "GameTags");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -254,6 +303,12 @@ namespace ChessBucket.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Games");
+
+            migrationBuilder.DropTable(
+                name: "Tags");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

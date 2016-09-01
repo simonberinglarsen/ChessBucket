@@ -8,5 +8,6 @@ namespace ChessBucket.Models.GameViewModels
     public class ShowGameViewModel
     {
         public int Id { get; set; }
+        public string Tags { get; set; }
     }
 }

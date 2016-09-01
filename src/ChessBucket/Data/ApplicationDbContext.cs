@@ -23,6 +23,8 @@ namespace ChessBucket.Data
         }
 
         public DbSet<GameCompressed> Games { get; set; }
+        public DbSet<GameTag> GameTags { get; set; }
+        public DbSet<Tag> Tags { get; set; }
         public DbSet<BatchQueueItem> BatchQueue { get; set; }
     }
 

@@ -122,6 +122,36 @@ namespace ChessBucket.Migrations
                     b.ToTable("Games");
                 });
 
+            modelBuilder.Entity("ChessBucket.Models.GameTag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("GameId");
+
+                    b.Property<int?>("TagId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("GameTags");
+                });
+
+            modelBuilder.Entity("ChessBucket.Models.Tag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tags");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>
                 {
                     b.Property<string>("Id");
@@ -227,6 +257,17 @@ namespace ChessBucket.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("ChessBucket.Models.GameTag", b =>
+                {
+                    b.HasOne("ChessBucket.Models.GameCompressed", "Game")
+                        .WithMany("Tags")
+                        .HasForeignKey("GameId");
+
+                    b.HasOne("ChessBucket.Models.Tag", "Tag")
+                        .WithMany()
+                        .HasForeignKey("TagId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>

@@ -1,5 +1,5 @@
 ﻿(function (angular) {
-    var app = angular.module('gameShowApp', []);
+    var app = angular.module('gameShowApp', ['ui.bootstrap']);
     app.controller('gameShowCtrl', ['$scope', '$http', function ($scope, $http) {
         $scope.boardHeader = '-';
         $scope.viewmodel = {};
@@ -9,8 +9,10 @@
         $scope.progressStyleBlack = { width: '50%' };
         $scope.progressStyleWhite = { width: '50%' };
         $scope.positionValue = 0;
-        $scope.analysisMode = false;
-        $http({ method: 'Get', url: '/Game/LoadGame', params: { 'id': globalViewModel.gameId} })
+        $scope.selectedTab = 'Moves';
+        $scope.tag = '';
+        $scope.allTags = [];
+        $http({ method: 'Get', url: '/Game/LoadGame', params: { 'id': globalViewModel.gameId } })
         .success(function (data) {
             $scope.viewmodel = data;
             $scope.showMove($scope.halfMove);
@@ -19,6 +21,14 @@
         .error(function (errorData) {
             var k = 8;
             $scope.isLoading = false;
+        });
+        $http({ method: 'Get', url: '/Game/GetTags', params: { 'gameId': globalViewModel.gameId } })
+        .success(function (data) {
+            $scope.allTags = data;
+            $scope.tagStorageStatus = 'tags loaded';
+        })
+        .error(function (errorData) {
+            $scope.tagStorageStatus = 'failed to load tags';
         });
         $scope.showPrincipalVariation = function (halfMove) {
             $scope.variationHalfMove = halfMove;
@@ -70,9 +80,7 @@
             else if (evalMove.Category === 3)
                 $scope.analysisHeader = 'Blunder exploited! good move.';
         }
-        $scope.setAnalysisMode = function (enable) {
-            $scope.analysisMode = enable;
-        }
+
         $scope.prevMove = function () {
             if ($scope.halfMove === 0)
                 return;
@@ -85,7 +93,45 @@
             $scope.halfMove++;
             $scope.showMove($scope.halfMove);
         }
+        $scope.addTag = function (tagName) {
+            $scope.allTags.push(tagName);
+            $scope.tagName = '';
+            $scope.updateTags();
+        }
+
+        $scope.removeTag = function (index) {
+            $scope.allTags.splice(index, 1);
+            $scope.updateTags();
+        }
+
+        $scope.updateTags = function () {
+            $scope.tagStorageStatus = 'updating tags';
+            var data = { "gameId": globalViewModel.gameId, "tags": $scope.allTags };
+            $http.post('/Game/UpdateTags', data, { headers: { 'Content-Type': 'application/json' } })
+            .success(function (data) {
+                $scope.tagStorageStatus = 'tag-update succeeded';
+            })
+            .error(function (errorData) {
+                $scope.tagStorageStatus = 'tag-update failed';
+            });
+        }
+
+        $scope.getTags = function (viewValue) {
+            return $http.get('/Game/GetAllTags', { params: { 'filter': viewValue } }).then(function (response) {
+                return response.data;
+            });
+        };
+
+        $scope.modelOptions = {
+            debounce: {
+                default: 500,
+                blur: 250
+            },
+            getterSetter: true
+        };
 
     }]);
+
+
 
 })(window.angular);

@@ -23,10 +23,12 @@ namespace ChessBucket.Controllers
         {
             _context = context;
         }
+
         public IActionResult Index()
         {
             return RedirectToAction("Search");
         }
+
         public IActionResult Search()
         {
             return View();
@@ -41,6 +43,64 @@ namespace ChessBucket.Controllers
         public IActionResult Show(int id)
         {
             return View(new ShowGameViewModel() { Id = id });
+        }
+
+
+        [HttpGet]
+        public string GetTags(int gameId)
+        {
+            var tags =
+                _context.Games.Where(g => g.Id == gameId)
+                    .Include(g => g.Tags)
+                    .ThenInclude(x => x.Tag).SelectMany(t => t.Tags.Select(q => q.Tag.Name)).ToList();
+            return JsonConvert.SerializeObject(tags);
+        }
+
+
+        [HttpGet]
+        [ResponseCache(Duration = 0)]
+        public string GetAllTags(string filter)
+        {
+            var tags = _context.Tags.Where(t => t.Name.Contains(filter)).Select(t => t.Name).ToList();
+            return JsonConvert.SerializeObject(tags);
+        }
+
+        [HttpPost]
+        public string UpdateTags([FromBody]TagData input)
+        {
+            try
+            {
+                // new tags
+                List<Tag> knownTags =
+                    _context.Tags.Where(t => input.tags.Contains(t.Name, StringComparer.OrdinalIgnoreCase)).ToList();
+                var newTags =
+                    input.tags.Where(
+                        inputTag =>
+                            !knownTags.Exists(
+                                knownTag =>
+                                    string.Compare(knownTag.Name, inputTag, StringComparison.OrdinalIgnoreCase) == 0))
+                        .Select(t => new Tag() { Id = 0, Name = t })
+                        .ToList();
+                // add new tags
+                _context.Tags.AddRange(newTags);
+                _context.SaveChanges();
+                // remove old tags for game
+                _context.GameTags.RemoveRange(_context.GameTags.Where(g => g.Game.Id == input.gameId));
+                _context.SaveChanges();
+                // link input tags to game
+                GameCompressed existingGame = new GameCompressed() { Id = input.gameId };
+                _context.Entry(existingGame).State = EntityState.Unchanged;
+                _context.GameTags.AddRange(knownTags.Select(t => new GameTag() { Tag = t, Game = existingGame }));
+                _context.GameTags.AddRange(newTags.Select(t => new GameTag() { Tag = t, Game = existingGame }));
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+
+            return "";
         }
 
         [HttpPost]
@@ -179,7 +239,7 @@ namespace ChessBucket.Controllers
             return JsonConvert.SerializeObject(vm);
         }
 
-      
+
 
         public string SearchGames(string searchText, int page)
         {
@@ -214,6 +274,12 @@ namespace ChessBucket.Controllers
         public class PgnData
         {
             public string pgnText { get; set; }
+        }
+
+        public class TagData
+        {
+            public int gameId { get; set; }
+            public string[] tags { get; set; }
         }
 
     }

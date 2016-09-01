@@ -1,11 +1,12 @@
 ﻿/// <autosync enabled="true" />
 /// <reference path="chessboardjs-0.3.0/js/chessboard-0.3.0.js" />
 /// <reference path="chessboardjs-0.3.0/js/json3.min.js" />
-/// <reference path="js/gamesearchapp - copy.js" />
+/// <reference path="js/adminQueueApp.js" />
 /// <reference path="js/gameSearchApp.js" />
 /// <reference path="js/gameShowApp.js" />
 /// <reference path="js/gameuploadapp.js" />
 /// <reference path="js/site.js" />
+/// <reference path="js/ui-bootstrap-tpls-2.1.3.min.js" />
 /// <reference path="lib/angular/angular.js" />
 /// <reference path="lib/bootstrap/dist/js/bootstrap.js" />
 /// <reference path="lib/jquery/dist/jquery.js" />
