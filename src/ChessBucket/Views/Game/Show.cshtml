@@ -16,7 +16,7 @@
         </p>
     </div>
     <div class="row">
-        <div class="col-sm-6" style="height: 500px; width: 400px; display: none;">
+        <div class="col-sm-6" style="height: 500px; width: 400px;">
             <h3>{{boardHeader}}</h3>
             <div id="board"></div>
             <p>
@@ -72,7 +72,7 @@
                     </div>
                     <div class="tab-content game-content" ng-show="selectedTab==='Comments'">
                         <div class="form-group">
-                            <label>Classify position <small> ( {{tagStorageStatus}} )</small></label>
+                            <label>Classify position <small> {{tagStorageStatus}}</small></label>
                             <div class='container-fluid typeahead-demo'>
                                 {{simon}}
                                 <input type="text" ng-model="tagName" placeholder="new tag (hit enter to add it!)" uib-typeahead="state for state in getTags($viewValue)"  class="form-control" ng-keypress="($event.which === 13)?addTag(tagName):0">
