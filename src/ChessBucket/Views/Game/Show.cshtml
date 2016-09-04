@@ -38,7 +38,8 @@
                     <ul class="nav nav-tabs">
                         <li ng-class="{'active' : selectedTab==='Moves'}" ng-click="selectedTab='Moves'"><a>Moves</a></li>
                         <li ng-class="{'active' : selectedTab==='Analysis'}" ng-click="selectedTab='Analysis'"><a>Analysis</a></li>
-                        <li ng-class="{'active' : selectedTab==='Comments'}" ng-click="selectedTab='Comments'"><a>Comments</a></li>
+                        <li ng-class="{'active' : selectedTab==='Tags'}" ng-click="selectedTab='Tags'"><a>Tags</a></li>
+                        <li ng-class="{'active' : selectedTab==='Fen'}" ng-click="selectedTab='Fen'"><a>Fen</a></li>
                     </ul>
                     <div class="tab-content game-content" ng-show="selectedTab==='Analysis'">
                         <div class="progress">
@@ -70,14 +71,13 @@
                             <span class="move" ng-class="{'move-selected':$index===halfMove, 'move-normal' : move.Category===0||move.Category===4, 'move-warning' : move.Category===1, ' move-danger' : move.Category===2, 'move-success' : move.Category===3}">{{move.Description}}</span>
                         </span>
                     </div>
-                    <div class="tab-content game-content" ng-show="selectedTab==='Comments'">
+                    <div class="tab-content game-content" ng-show="selectedTab==='Tags'">
                         <div class="form-group">
-                            <label>Classify position <small> {{tagStorageStatus}}</small></label>
+                            <label>Tag position</label>
                             <div class='container-fluid typeahead-demo'>
                                 {{simon}}
                                 <input type="text" ng-model="tagName" placeholder="new tag (hit enter to add it!)" uib-typeahead="state for state in getTags($viewValue)"  class="form-control" ng-keypress="($event.which === 13)?addTag(tagName):0">
                             </div>
-
                         </div>
                         <div class="form-group">
                             <span class="label lb-md label-primary label-spaced" ng-repeat="item in allTags track by $index">
@@ -85,8 +85,20 @@
                                 </span>
                                 {{item}}
                             </span>
+
+                        </div>
+                        <div class="form-group">
+                            <small>
+                                ({{tagStorageStatus}})
+                            </small>
                         </div>
 
+                    </div>
+                    <div class="tab-content game-content" ng-show="selectedTab==='Fen'">
+                        <div class="form-group">
+                            <label>Fen:</label>
+                            <pre>{{currentPosition}}</pre>
+                        </div>
                     </div>
                 </div>
             </div>

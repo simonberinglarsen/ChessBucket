@@ -1,6 +1,7 @@
 ﻿(function (angular) {
     var app = angular.module('gameShowApp', ['ui.bootstrap']);
     app.controller('gameShowCtrl', ['$scope', '$http', function ($scope, $http) {
+        $scope.currentPosition = '';
         $scope.boardHeader = '-';
         $scope.viewmodel = {};
         $scope.currentMove = {};
@@ -34,7 +35,7 @@
             $scope.variationHalfMove = halfMove;
             var currentVariationMove = $scope.bestMove.PrincipalVariation[halfMove];
             var fen = currentVariationMove.Fen;
-            board.position(fen);
+            $scope.setBoardFen(fen);
         }
         $scope.nextVariationMove = function () {
             if ($scope.variationHalfMove === $scope.bestMove.PrincipalVariation.length - 1)
@@ -70,7 +71,7 @@
             $scope.progressStyleBlack.width = (100 - styleValue * 0.125) + '%';
 
             var fen = actualMove.Fen;
-            board.position(fen);
+            $scope.setBoardFen(fen);
             $scope.boardHeader = evalMove.Description;
             $scope.analysisHeader = 'fine move. Computer suggests this plan:';
             if (evalMove.Category === 1)
@@ -79,6 +80,11 @@
                 $scope.analysisHeader = 'Text move (' + $scope.actualMove.MoveSan + ') was a blunder. Better was:';
             else if (evalMove.Category === 3)
                 $scope.analysisHeader = 'Blunder exploited! good move.';
+        }
+
+        $scope.setBoardFen = function(fen) {
+            board.position(fen);
+            $scope.currentPosition = fen;
         }
 
         $scope.prevMove = function () {
