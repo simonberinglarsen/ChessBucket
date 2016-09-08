@@ -61,7 +61,7 @@ namespace ChessBucket.Controllers
         [ResponseCache(Duration = 0)]
         public string GetAllTags(string filter)
         {
-            var tags = _context.Tags.Where(t => t.Name.Contains(filter)).Select(t => t.Name).ToList();
+            var tags = _context.Tags.Where(t => t.Name.ToLower().Contains(filter.ToLower())).Select(t => t.Name).ToList();
             return JsonConvert.SerializeObject(tags);
         }
 
@@ -79,7 +79,7 @@ namespace ChessBucket.Controllers
                             !knownTags.Exists(
                                 knownTag =>
                                     string.Compare(knownTag.Name, inputTag, StringComparison.OrdinalIgnoreCase) == 0))
-                        .Select(t => new Tag() { Id = 0, Name = t })
+                        .Select(t => new Tag() { Id = 0, Name = t.ToLower() })
                         .ToList();
                 // add new tags
                 _context.Tags.AddRange(newTags);

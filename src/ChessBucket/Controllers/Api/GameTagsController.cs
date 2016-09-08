@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,73 +11,69 @@ using ChessBucket.Models;
 namespace ChessBucket.Controllers.Api
 {
     [Produces("application/json")]
-    [Route("api/Tags")]
-    public class TagsController : Controller
+    [Route("api/GameTags")]
+    public class GameTagsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public TagsController(ApplicationDbContext context)
+        public GameTagsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Tags
-        [HttpGet]
-        public IActionResult GetTags([FromQuery] string contains)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            List<Tag> tags;
-            if (!string.IsNullOrWhiteSpace(contains))
-                tags = _context.Tags.Where(m => m.Name.ToLower().Contains(contains.ToLower())).ToList();
-            else
-                tags = _context.Tags.ToList();
-
-            if (!tags.Any())
-            {
-                return NotFound();
-            }
-
-            return Ok(tags);
-        }
-
-        // GET: api/Tags/5
-        [HttpGet("{id}")]
-        public IActionResult GetTag([FromRoute] int id)
+        // GET: api/gametags/game/5
+        [HttpGet("game/{gameId}")]
+        public IActionResult GetGameTagByGameId([FromRoute] int gameId)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            Tag tag = _context.Tags.SingleOrDefault(m => m.Id == id);
+            List<Tag> gameTag = _context.GameTags.Include(x => x.Tag).Where(m => m.Game.Id == gameId).Select(x => x.Tag).ToList();
 
-            if (tag == null)
+            if (!gameTag.Any())
             {
                 return NotFound();
             }
 
-            return Ok(tag);
+            return Ok(gameTag);
         }
 
-      
-        // PUT: api/Tags/5
+        // GET: api/gametags/tag/5
+        [HttpGet("tag/{tagId}")]
+        public IActionResult GetGameTagByTagId([FromRoute] int tagId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            List<GameTag> gameTag = _context.GameTags.Include(x => x.Game).Include(x => x.Tag).Where(m => m.Tag.Id == tagId).ToList();
+
+            if (!gameTag.Any())
+            {
+                return NotFound();
+            }
+
+            return Ok(gameTag);
+        }
+
+        // PUT: api/GameTags/5
         [HttpPut("{id}")]
-        public IActionResult PutTag([FromRoute] int id, [FromBody] Tag tag)
+        public IActionResult PutGameTag([FromRoute] int id, [FromBody] GameTag gameTag)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != tag.Id)
+            if (id != gameTag.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(tag).State = EntityState.Modified;
+            _context.Entry(gameTag).State = EntityState.Modified;
 
             try
             {
@@ -86,7 +81,7 @@ namespace ChessBucket.Controllers.Api
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TagExists(id))
+                if (!GameTagExists(id))
                 {
                     return NotFound();
                 }
@@ -99,23 +94,23 @@ namespace ChessBucket.Controllers.Api
             return NoContent();
         }
 
-        // POST: api/Tags
+        // POST: api/GameTags
         [HttpPost]
-        public IActionResult PostTag([FromBody] Tag tag)
+        public IActionResult PostGameTag([FromBody] GameTag gameTag)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Tags.Add(tag);
+            _context.GameTags.Add(gameTag);
             try
             {
                 _context.SaveChanges();
             }
             catch (DbUpdateException)
             {
-                if (TagExists(tag.Id))
+                if (GameTagExists(gameTag.Id))
                 {
                     return new StatusCodeResult(StatusCodes.Status409Conflict);
                 }
@@ -125,35 +120,33 @@ namespace ChessBucket.Controllers.Api
                 }
             }
 
-            return CreatedAtAction("GetTag", new { id = tag.Id }, tag);
+            return CreatedAtAction("GetGameTag", new { id = gameTag.Id }, gameTag);
         }
 
-        // DELETE: api/Tags/5
+        // DELETE: api/GameTags/5
         [HttpDelete("{id}")]
-        public IActionResult DeleteTag([FromRoute] int id)
+        public IActionResult DeleteGameTag([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var gameTags = _context.GameTags.Where(gt => gt.Tag.Id == id).ToList();
-            Tag tag = _context.Tags.SingleOrDefault(m => m.Id == id);
-            if (tag == null)
+            GameTag gameTag = _context.GameTags.SingleOrDefault(m => m.Id == id);
+            if (gameTag == null)
             {
                 return NotFound();
             }
 
-            _context.GameTags.RemoveRange(gameTags);
-            _context.Tags.Remove(tag);
+            _context.GameTags.Remove(gameTag);
             _context.SaveChanges();
 
-            return Ok(tag);
+            return Ok(gameTag);
         }
 
-        private bool TagExists(int id)
+        private bool GameTagExists(int id)
         {
-            return _context.Tags.Any(e => e.Id == id);
+            return _context.GameTags.Any(e => e.Id == id);
         }
     }
 }

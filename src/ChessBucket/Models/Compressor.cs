@@ -84,6 +84,7 @@ namespace ChessBucket.Models
                 White = input.White,
                 Black = input.Black,
                 WhiteElo = input.WhiteElo,
+                BlackElo = input.BlackElo,
                 Result = input.Result,
                 MovesSan = decompressedObject.MovesSan,
                 MovesLan = decompressedObject.MovesLan,
