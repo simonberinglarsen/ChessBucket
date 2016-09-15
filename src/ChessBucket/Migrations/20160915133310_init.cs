@@ -90,6 +90,20 @@ namespace ChessBucket.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TreeNodes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGeneratedOnAdd", true),
+                    Fen = table.Column<string>(nullable: true),
+                    Value = table.Column<double>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TreeNodes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {
@@ -185,6 +199,34 @@ namespace ChessBucket.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TreeNodeTransitions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGeneratedOnAdd", true),
+                    ChildId = table.Column<int>(nullable: true),
+                    ParentId = table.Column<int>(nullable: true),
+                    Player = table.Column<string>(nullable: true),
+                    San = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TreeNodeTransitions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TreeNodeTransitions_TreeNodes_ChildId",
+                        column: x => x.ChildId,
+                        principalTable: "TreeNodes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TreeNodeTransitions_TreeNodes_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "TreeNodes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -251,6 +293,16 @@ namespace ChessBucket.Migrations
                 column: "TagId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TreeNodeTransitions_ChildId",
+                table: "TreeNodeTransitions",
+                column: "ChildId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TreeNodeTransitions_ParentId",
+                table: "TreeNodeTransitions",
+                column: "ParentId");
+
+            migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
                 column: "NormalizedName");
@@ -290,6 +342,9 @@ namespace ChessBucket.Migrations
                 name: "GameTags");
 
             migrationBuilder.DropTable(
+                name: "TreeNodeTransitions");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
             migrationBuilder.DropTable(
@@ -309,6 +364,9 @@ namespace ChessBucket.Migrations
 
             migrationBuilder.DropTable(
                 name: "Tags");
+
+            migrationBuilder.DropTable(
+                name: "TreeNodes");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

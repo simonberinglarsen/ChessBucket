@@ -8,8 +8,8 @@ using ChessBucket.Data;
 namespace ChessBucket.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20160909173538_ff")]
-    partial class ff
+    [Migration("20160915133310_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
