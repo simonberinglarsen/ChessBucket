@@ -24,7 +24,7 @@ namespace ChessBucket.Models
             FindHeaderOrGame,
             ReadHeader,
             ReadGame,
-            
+
         }
 
         private void Parse(string pgn)
@@ -121,11 +121,14 @@ namespace ChessBucket.Models
             List<string> san = new List<string>();
             for (int i = 0; i < elements.Length; i++)
             {
-
+                if (lan.Count / 2 + 1 == 51)
+                {
+                    int k = 8;
+                }
                 if (elements[i] == "1-0" ||
-                    elements[i] == "0-1" ||
-                    elements[i] == "1/2-1/2" ||
-                    string.IsNullOrWhiteSpace(elements[i]))
+                elements[i] == "0-1" ||
+                elements[i] == "1/2-1/2" ||
+                string.IsNullOrWhiteSpace(elements[i]))
                     break;
                 if (i % 3 == 0)
                     continue;
@@ -138,7 +141,7 @@ namespace ChessBucket.Models
                     {
                         // if you type nge2 even though only 1 knight can go to e2 it will be accepted as a move 
                         // (by removing the g and then finding the san)
-                        if (elements[i].Length == 4 && ("RNBQ".IndexOf(elements[i][0])) > 0)
+                        if (elements[i].Length == 4 && ("RNBQ".IndexOf(elements[i][0])) >= 0)
                         {
                             string adjustedmove = elements[i][0] + elements[i].Substring(2);
                             r = moves.SingleOrDefault(x => x.San == adjustedmove);
@@ -152,7 +155,7 @@ namespace ChessBucket.Models
                 {
                     string playerColor = lan.Count % 2 == 0 ? "whites" : "blacks";
                     int moveno = lan.Count / 2 + 1;
-                    throw new Exception($"{playerColor} move {moveno} is not legal. I received this move: " + elements[i] + "... maybe these headers will help you find the game: "+ pgnGame.HeaderString());
+                    throw new Exception($"{playerColor} move {moveno} is not legal. I received this move: " + elements[i] + "... maybe these headers will help you find the game: " + pgnGame.HeaderString());
                 }
 
 

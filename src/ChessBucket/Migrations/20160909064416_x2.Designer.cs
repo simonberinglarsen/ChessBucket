@@ -8,9 +8,10 @@ using ChessBucket.Data;
 namespace ChessBucket.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20160909064416_x2")]
+    partial class x2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rtm-21431");
@@ -174,8 +175,6 @@ namespace ChessBucket.Migrations
                     b.Property<int?>("ChildId");
 
                     b.Property<int?>("ParentId");
-
-                    b.Property<string>("Player");
 
                     b.Property<string>("San");
 

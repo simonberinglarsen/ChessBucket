@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "Opening Tree";
+}
+<div ng-app="openingApp" ng-controller="openingCtrl">
+    <div class="page-header">
+        <h1>
+            Opening Tree
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-sm-6" style="height: 500px; width: 350px;">
+            <h3>{{boardHeader}}</h3>
+            <div id="board"></div>
+            <p>
+                <div class="btn btn-default" ng-click="prevMove()" style="width: 110px">
+                    <br/>
+                    <span class="glyphicon glyphicon-chevron-left"></span>prev
+                    <br/><br/>
+                </div>
+                <div class="btn btn-default" ng-click="showMove(halfMove)">
+                    <br/>
+                    reset <span class="glyphicon glyphicon-refresh"></span>
+                    <br/>
+                    <br/>
+                </div>
+                <div class="btn btn-default" ng-click="nextMove()" style="width: 110px">
+                    <br/>next<span class="glyphicon glyphicon-chevron-right"></span>
+                    <br/>
+                    <br/>
+                </div>
+            </p>
+            <span class="move move-normal" ng-repeat="item in line track by $index" ng-click="revertLine($index)" >
+                {{item.San}}
+            </span>
+        </div>
+        <div class="col-sm-6">
+            <div ng-repeat="t in viewmodel.transitions" ng-click="selectNode(t.Child.Id, t.San)">
+                <span class="move move-normal">
+                    {{t.San}} ({{t.Player}})
+                </span>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        var cfg = {
+            pieceTheme: '/chessboardjs-0.3.0/img/chesspieces/wikipedia/{piece}.png',
+            draggable: true
+        };
+        var board = ChessBoard('board', cfg);
+        //--- end example JS ---
+    </script>
+    <script src="~/js/openingApp.js"></script>
+}

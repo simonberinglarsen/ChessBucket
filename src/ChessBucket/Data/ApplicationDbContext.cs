@@ -26,6 +26,8 @@ namespace ChessBucket.Data
         public DbSet<GameTag> GameTags { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<BatchQueueItem> BatchQueue { get; set; }
+        public DbSet<TreeNode> TreeNodes { get; set; }
+        public DbSet<TreeNodeTransition> TreeNodeTransitions { get; set; }
     }
 
     public class DatabaseSeeder
